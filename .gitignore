@@ -10,9 +10,12 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 
 # 设置忽略文件
+**/rebel.xml
+**/.rebel.xml.bak
 **/mvnw
 **/mvnw.cmd
 **/.mvn
 **/target/
 .idea
 **/.gitignore
+
