@@ -1,5 +1,6 @@
 package site.wanjiahao.gulimall.product.dao;
 
+import org.apache.ibatis.annotations.Param;
 import site.wanjiahao.gulimall.product.entity.AttrGroupEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,5 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface AttrGroupDao extends BaseMapper<AttrGroupEntity> {
-	
+
+    void deleteRelWithAttr(@Param("groupId") Long groupId, @Param("attrId") Long attrId);
 }

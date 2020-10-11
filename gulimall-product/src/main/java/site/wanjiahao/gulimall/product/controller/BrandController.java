@@ -72,7 +72,6 @@ public class BrandController {
     // @RequiresPermissions("product:brand:update")
     public R update(@Validated(UpdateGroup.class) @RequestBody BrandEntity brand) {
         brandService.updateById(brand);
-
         return R.ok();
     }
 
@@ -83,7 +82,6 @@ public class BrandController {
     // @RequiresPermissions("product:brand:delete")
     public R delete(@RequestBody Long[] brandIds) {
         brandService.removeByIds(Arrays.asList(brandIds));
-
         return R.ok();
     }
 

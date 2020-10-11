@@ -4,6 +4,8 @@ import site.wanjiahao.gulimall.product.entity.CategoryBrandRelationEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 品牌分类关联
  * 
@@ -13,5 +15,10 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface CategoryBrandRelationDao extends BaseMapper<CategoryBrandRelationEntity> {
-	
+
+    CategoryBrandRelationEntity selectByBrandId(Long brandId);
+
+    void deleteByBrandId(Long brandId);
+
+    List<Long> listCatIdsByBrandId(Long brandId);
 }

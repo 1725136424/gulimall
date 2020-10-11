@@ -5,11 +5,7 @@ import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import site.wanjiahao.gulimall.product.entity.CategoryBrandRelationEntity;
 import site.wanjiahao.gulimall.product.service.CategoryBrandRelationService;
@@ -60,8 +56,7 @@ public class CategoryBrandRelationController {
     @RequestMapping("/save")
     // @RequiresPermissions("product:categorybrandrelation:save")
     public R save(@RequestBody CategoryBrandRelationEntity categoryBrandRelation){
-		categoryBrandRelationService.save(categoryBrandRelation);
-
+		categoryBrandRelationService.saveRel(categoryBrandRelation);
         return R.ok();
     }
 
@@ -84,6 +79,16 @@ public class CategoryBrandRelationController {
     public R delete(@RequestBody Long[] ids){
 		categoryBrandRelationService.removeByIds(Arrays.asList(ids));
 
+        return R.ok();
+    }
+
+    /**
+     * 删除分类对应的品牌
+     */
+    @GetMapping("/category/{catId}/brand/{brandId}/delete")
+    public R deleteByCatIdAndBrandId(@PathVariable("catId") Long catId,
+                                     @PathVariable("brandId") Long brandId) {
+        categoryBrandRelationService.deleteByCatIdAndBrandId(catId, brandId);
         return R.ok();
     }
 

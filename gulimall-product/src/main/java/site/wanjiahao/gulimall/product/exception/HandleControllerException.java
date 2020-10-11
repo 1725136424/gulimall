@@ -17,7 +17,7 @@ public class HandleControllerException {
     // 方法参数绑定异常
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public R handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        log.debug("感知到异常{}", e.toString());
+        log.error("感知到异常{}", e.toString());
         BindingResult bindingResult = e.getBindingResult();
         HashMap<String, String> errorMap = new HashMap<>();
         bindingResult.getFieldErrors()
@@ -44,10 +44,10 @@ public class HandleControllerException {
      *              1.IOException
      *
      */
-    @ExceptionHandler(value = Throwable.class)
+    /*@ExceptionHandler(value = Throwable.class)
     public R handleThrowable(Throwable throwable) {
-        log.debug("感知异常{}", throwable.toString());
+        log.error("感知异常{}", throwable.toString());
         return R.error(BizCodeEnum.UNKNOWN_EXCEPTION.getBizCode(),
                 BizCodeEnum.UNKNOWN_EXCEPTION.getMessage());
-    }
+    }*/
 }

@@ -23,5 +23,11 @@ public interface CategoryService extends IService<CategoryEntity> {
     List<CategoryEntity> listCategoryByPcid(Long pcid);
 
     void updateBatch(List<CategoryEntity> categoryEntities);
+
+    List<Long> listCategoryPath(Long catelogId);
+
+    CategoryEntity listById(Long catelogId);
+
+    PageUtils listWithPageByBranId(Map<String, Object> params, Long brandId);
 }
 

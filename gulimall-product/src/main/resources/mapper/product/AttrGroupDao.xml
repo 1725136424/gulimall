@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="site.wanjiahao.gulimall.product.dao.AttrGroupDao">
 
-	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="site.wanjiahao.gulimall.product.entity.AttrGroupEntity" id="attrGroupMap">
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="site.wanjiahao.gulimall.product.entity.AttrGroupEntity"
+               id="attrGroupMap">
         <result property="attrGroupId" column="attr_group_id"/>
         <result property="attrGroupName" column="attr_group_name"/>
         <result property="sort" column="sort"/>
@@ -13,5 +15,8 @@
         <result property="catelogId" column="catelog_id"/>
     </resultMap>
 
+    <delete id="deleteRelWithAttr">
+        DELETE FROM `pms_attr_attrgroup_relation` WHERE attr_id = #{attrId} AND attr_group_id = #{groupId}
+    </delete>
 
 </mapper>

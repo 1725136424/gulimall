@@ -16,5 +16,17 @@ import java.util.Map;
 public interface AttrGroupService extends IService<AttrGroupEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    PageUtils queryPage(Map<String, Object> params, Long catId);
+
+    PageUtils queryPageWithAttr(Map<String, Object> params, Long groupId);
+
+    void deleteRelWithAttr(Long groupId, Long attrId);
+
+    void deleteRelWithAttr(Long groupId, Long[] attrIds);
+
+    PageUtils listOtherAttrWithPage(Long catId, Map<String, Object> params);
+
+    void saveRel(Long attrGroupId, Long[] attrId);
 }
 

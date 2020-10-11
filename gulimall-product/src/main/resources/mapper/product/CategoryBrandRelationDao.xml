@@ -12,5 +12,14 @@
         <result property="catelogName" column="catelog_name"/>
     </resultMap>
 
+    <select id="selectByBrandId" resultMap="categoryBrandRelationMap">
+        SELECT * FROM `pms_category_brand_relation` WHERE brand_id = #{brandId}
+    </select>
+    <select id="listCatIdsByBrandId" resultType="java.lang.Long">
+        SELECT catelog_id FROM `pms_category_brand_relation` WHERE brand_id = #{brandId}
+    </select>
+    <delete id="deleteByBrandId">
+        DELETE FROM `pms_category_brand_relation` WHERE brand_id = #{brandId}
+    </delete>
 
 </mapper>

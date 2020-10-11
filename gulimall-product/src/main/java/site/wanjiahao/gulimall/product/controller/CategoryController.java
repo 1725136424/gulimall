@@ -6,11 +6,7 @@ import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import site.wanjiahao.gulimall.product.entity.CategoryEntity;
 import site.wanjiahao.gulimall.product.service.CategoryService;
@@ -48,6 +44,16 @@ public class CategoryController {
     public R list(@PathVariable("pcid") Long pcid) {
         List<CategoryEntity> entities = categoryService.listCategoryByPcid(pcid);
         return R.ok().put("data", entities);
+    }
+
+    /**
+     * 根据品牌id获取所有的分类
+     */
+    @GetMapping("/brand/{brandId}")
+    public R listByBrandId(@PathVariable("brandId") Long brandId,
+                           @RequestParam Map<String, Object> params) {
+        PageUtils pageUtils = categoryService.listWithPageByBranId(params, brandId);
+        return R.ok().put("page", pageUtils);
     }
 
     /**

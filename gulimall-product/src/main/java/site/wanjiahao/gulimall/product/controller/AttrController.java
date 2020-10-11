@@ -5,11 +5,7 @@ import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import site.wanjiahao.gulimall.product.entity.AttrEntity;
 import site.wanjiahao.gulimall.product.service.AttrService;
@@ -33,12 +29,14 @@ public class AttrController {
 
     /**
      * 列表
+     * type 属性的类型 基础属性 销售属性
      */
-    @RequestMapping("/list")
+    @RequestMapping("{type}/list/{catId}")
     // @RequiresPermissions("product:attr:list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = attrService.queryPage(params);
-
+    public R list(@RequestParam Map<String, Object> params,
+                  @PathVariable("type") String type,
+                  @PathVariable("catId") Long catId){
+        PageUtils page = attrService.queryPage(params, type, catId);
         return R.ok().put("page", page);
     }
 
@@ -73,6 +71,15 @@ public class AttrController {
     public R update(@RequestBody AttrEntity attr){
 		attrService.updateById(attr);
 
+        return R.ok();
+    }
+
+    /**
+     * 修改状态
+     */
+    @PostMapping("/changeStatus")
+    public R changeStatus(@RequestBody AttrEntity attr){
+        attrService.updateById(attr);
         return R.ok();
     }
 
