@@ -1,27 +1,21 @@
 package site.wanjiahao.gulimall.product.controller;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import site.wanjiahao.common.utils.PageUtils;
+import site.wanjiahao.common.utils.R;
+import site.wanjiahao.gulimall.product.entity.AttrGroupEntity;
+import site.wanjiahao.gulimall.product.service.AttrGroupService;
+import site.wanjiahao.gulimall.product.service.CategoryService;
+import site.wanjiahao.gulimall.product.vo.AttrGroupVo;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import site.wanjiahao.gulimall.product.entity.AttrGroupEntity;
-import site.wanjiahao.gulimall.product.entity.CategoryEntity;
-import site.wanjiahao.gulimall.product.service.AttrGroupService;
-import site.wanjiahao.common.utils.PageUtils;
-import site.wanjiahao.common.utils.R;
-import site.wanjiahao.gulimall.product.service.CategoryService;
-import site.wanjiahao.gulimall.product.vo.AttrGroupVo;
 
 
 /**
@@ -138,8 +132,7 @@ public class AttrGroupController {
     @RequestMapping("/delete")
     // @RequiresPermissions("product:attrgroup:delete")
     public R delete(@RequestBody Long[] attrGroupIds){
-		attrGroupService.removeByIds(Arrays.asList(attrGroupIds));
-
+		attrGroupService.removeRelation(Arrays.asList(attrGroupIds));
         return R.ok();
     }
 

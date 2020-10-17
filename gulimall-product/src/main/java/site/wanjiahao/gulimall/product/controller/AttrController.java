@@ -1,16 +1,16 @@
 package site.wanjiahao.gulimall.product.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import site.wanjiahao.common.utils.PageUtils;
+import site.wanjiahao.common.utils.R;
+import site.wanjiahao.gulimall.product.entity.AttrEntity;
+import site.wanjiahao.gulimall.product.service.AttrService;
+
 import java.util.Arrays;
 import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import site.wanjiahao.gulimall.product.entity.AttrEntity;
-import site.wanjiahao.gulimall.product.service.AttrService;
-import site.wanjiahao.common.utils.PageUtils;
-import site.wanjiahao.common.utils.R;
 
 
 
@@ -89,8 +89,7 @@ public class AttrController {
     @RequestMapping("/delete")
     // @RequiresPermissions("product:attr:delete")
     public R delete(@RequestBody Long[] attrIds){
-		attrService.removeByIds(Arrays.asList(attrIds));
-
+		attrService.removeRelation(Arrays.asList(attrIds));
         return R.ok();
     }
 

@@ -1,21 +1,14 @@
 package site.wanjiahao.gulimall.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.common.utils.Query;
-
 import site.wanjiahao.gulimall.product.dao.BrandDao;
 import site.wanjiahao.gulimall.product.entity.BrandEntity;
 import site.wanjiahao.gulimall.product.entity.CategoryBrandRelationEntity;
@@ -24,6 +17,10 @@ import site.wanjiahao.gulimall.product.service.BrandService;
 import site.wanjiahao.gulimall.product.service.CategoryBrandRelationService;
 import site.wanjiahao.gulimall.product.service.CategoryService;
 import site.wanjiahao.gulimall.product.vo.BrandRespVo;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service("brandService")
@@ -67,4 +64,19 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
         return pageUtils;
     }
 
+    @Override
+    public List<BrandEntity> listByCatId(Long catId) {
+        List<Long> brandIds =  categoryBrandRelationService.listBrandIdsByCatId(catId);
+       if (brandIds != null && brandIds.size() > 0) {
+           QueryWrapper<BrandEntity> wrapper = new QueryWrapper<>();
+           wrapper.in("brand_id", brandIds);
+           return baseMapper.selectList(wrapper);
+       }
+        return null;
+    }
+
+    @Override
+    public BrandEntity listById(Long brandId) {
+        return baseMapper.selectById(brandId);
+    }
 }

@@ -18,6 +18,9 @@
     <select id="listCatIdsByBrandId" resultType="java.lang.Long">
         SELECT catelog_id FROM `pms_category_brand_relation` WHERE brand_id = #{brandId}
     </select>
+    <select id="listBrandIdsByCatId" resultType="java.lang.Long">
+        SELECT brand_id FROM `pms_category_brand_relation` WHERE catelog_id = #{catelog_id}
+    </select>
     <delete id="deleteByBrandId">
         DELETE FROM `pms_category_brand_relation` WHERE brand_id = #{brandId}
     </delete>

@@ -1,5 +1,7 @@
 package site.wanjiahao.common.valid;
 
+import site.wanjiahao.common.valid.ConstraintValidator.ListValConstraintValidator;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Documented;

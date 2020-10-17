@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.gulimall.product.entity.AttrEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,5 +21,7 @@ public interface AttrService extends IService<AttrEntity> {
     PageUtils queryPage(Map<String, Object> params, String type, Long catId);
 
     AttrEntity listById(Long attrId);
+
+    void removeRelation(List<Long> asList);
 }
 

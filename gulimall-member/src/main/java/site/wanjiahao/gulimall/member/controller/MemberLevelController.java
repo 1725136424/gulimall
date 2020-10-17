@@ -1,20 +1,17 @@
 package site.wanjiahao.gulimall.member.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import site.wanjiahao.common.utils.PageUtils;
+import site.wanjiahao.common.utils.R;
+import site.wanjiahao.gulimall.member.entity.MemberLevelEntity;
+import site.wanjiahao.gulimall.member.service.MemberLevelService;
+
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import site.wanjiahao.gulimall.member.entity.MemberLevelEntity;
-import site.wanjiahao.gulimall.member.service.MemberLevelService;
-import site.wanjiahao.common.utils.PageUtils;
-import site.wanjiahao.common.utils.R;
 
 
 
@@ -40,6 +37,15 @@ public class MemberLevelController {
         PageUtils page = memberLevelService.queryPage(params);
 
         return R.ok().put("page", page);
+    }
+
+    /**
+     * 获取有会员价格特权的会员
+     */
+    @RequestMapping("/listPriviledge")
+    public R listPriviledge(){
+        List<MemberLevelEntity> memberLevelEntities = memberLevelService.listPriviledge();
+        return R.ok().put("data", memberLevelEntities);
     }
 
 

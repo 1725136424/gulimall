@@ -21,4 +21,6 @@ public interface CategoryBrandRelationDao extends BaseMapper<CategoryBrandRelati
     void deleteByBrandId(Long brandId);
 
     List<Long> listCatIdsByBrandId(Long brandId);
+
+    List<Long> listBrandIdsByCatId(Long catId);
 }

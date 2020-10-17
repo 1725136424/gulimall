@@ -124,4 +124,30 @@ public class Constant {
         }
     }
 
+    /**
+     * 属性类型枚举
+     */
+    public enum AttrType {
+        BASE_ATTR(0, "基本属性"),
+        SALE_ATTR(1, "销售属性"),
+        OTHER_ATTR(2, "其他属性");
+
+        private final Integer code;
+
+        private final String message;
+
+        AttrType(Integer code,String message) {
+            this.code = code;
+            this.message = message;
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
+
 }

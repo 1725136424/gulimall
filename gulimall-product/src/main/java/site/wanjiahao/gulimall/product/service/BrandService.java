@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.gulimall.product.entity.BrandEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +17,9 @@ import java.util.Map;
 public interface BrandService extends IService<BrandEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    List<BrandEntity> listByCatId(Long catId);
+
+    BrandEntity listById(Long brandId);
 }
 

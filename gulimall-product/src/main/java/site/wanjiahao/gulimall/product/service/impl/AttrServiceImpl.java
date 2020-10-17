@@ -1,27 +1,26 @@
 package site.wanjiahao.gulimall.product.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import site.wanjiahao.common.utils.PageUtils;
+import site.wanjiahao.common.utils.Query;
+import site.wanjiahao.gulimall.product.dao.AttrDao;
+import site.wanjiahao.gulimall.product.entity.AttrAttrgroupRelationEntity;
+import site.wanjiahao.gulimall.product.entity.AttrEntity;
+import site.wanjiahao.gulimall.product.entity.CategoryEntity;
+import site.wanjiahao.gulimall.product.service.AttrAttrgroupRelationService;
+import site.wanjiahao.gulimall.product.service.AttrService;
+import site.wanjiahao.gulimall.product.service.CategoryService;
+import site.wanjiahao.gulimall.product.vo.AttrRespVo;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.transaction.annotation.Transactional;
-import site.wanjiahao.common.utils.PageUtils;
-import site.wanjiahao.common.utils.Query;
-
-import site.wanjiahao.gulimall.product.dao.AttrDao;
-import site.wanjiahao.gulimall.product.entity.AttrEntity;
-import site.wanjiahao.gulimall.product.entity.CategoryEntity;
-import site.wanjiahao.gulimall.product.service.AttrService;
-import site.wanjiahao.gulimall.product.service.CategoryService;
-import site.wanjiahao.gulimall.product.vo.AttrRespVo;
 
 
 @Service("attrService")
@@ -29,6 +28,9 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private AttrAttrgroupRelationService attrAttrgroupRelationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -77,5 +79,16 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     @Override
     public AttrEntity listById(Long attrId) {
         return baseMapper.selectById(attrId);
+    }
+
+    @Override
+    public void removeRelation(List<Long> asList) {
+        baseMapper.deleteBatchIds(asList);
+        if (asList != null && asList.size() > 0) {
+            // 删除关系
+            QueryWrapper<AttrAttrgroupRelationEntity> wrapper = new QueryWrapper<>();
+            wrapper.in("attr_id", asList);
+            attrAttrgroupRelationService.remove(wrapper);
+        }
     }
 }

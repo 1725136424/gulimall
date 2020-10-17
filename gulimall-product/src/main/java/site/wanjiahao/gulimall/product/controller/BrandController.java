@@ -1,23 +1,20 @@
 package site.wanjiahao.gulimall.product.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
-// import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import site.wanjiahao.gulimall.product.entity.BrandEntity;
-import site.wanjiahao.gulimall.product.service.BrandService;
+import org.springframework.web.bind.annotation.*;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.common.utils.R;
 import site.wanjiahao.common.valid.SaveGroup;
 import site.wanjiahao.common.valid.UpdateGroup;
+import site.wanjiahao.gulimall.product.entity.BrandEntity;
+import site.wanjiahao.gulimall.product.service.BrandService;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+// import org.apache.shiro.authz.annotation.RequiresPermissions;
 
 
 /**
@@ -30,6 +27,7 @@ import site.wanjiahao.common.valid.UpdateGroup;
 @RestController
 @RequestMapping("product/brand")
 public class BrandController {
+
     @Autowired
     private BrandService brandService;
 
@@ -41,6 +39,15 @@ public class BrandController {
     public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = brandService.queryPage(params);
         return R.ok().put("page", page);
+    }
+
+    /**
+     * 根据分类获取品牌
+     */
+    @GetMapping("/category/{catId}/list")
+    public R listByCatId(@PathVariable("catId") Long catId) {
+        List<BrandEntity> brandEntities = brandService.listByCatId(catId);
+        return R.ok().put("data", brandEntities);
     }
 
 

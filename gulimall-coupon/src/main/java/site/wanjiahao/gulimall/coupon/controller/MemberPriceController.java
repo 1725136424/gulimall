@@ -1,20 +1,17 @@
 package site.wanjiahao.gulimall.coupon.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import site.wanjiahao.common.utils.PageUtils;
+import site.wanjiahao.common.utils.R;
+import site.wanjiahao.gulimall.coupon.entity.MemberPriceEntity;
+import site.wanjiahao.gulimall.coupon.service.MemberPriceService;
+
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import site.wanjiahao.gulimall.coupon.entity.MemberPriceEntity;
-import site.wanjiahao.gulimall.coupon.service.MemberPriceService;
-import site.wanjiahao.common.utils.PageUtils;
-import site.wanjiahao.common.utils.R;
 
 
 
@@ -61,9 +58,18 @@ public class MemberPriceController {
     // @RequiresPermissions("coupon:memberprice:save")
     public R save(@RequestBody MemberPriceEntity memberPrice){
 		memberPriceService.save(memberPrice);
-
         return R.ok();
     }
+
+    /**
+     * 批量保存
+     */
+    @RequestMapping("/saveBatch")
+    public R save(@RequestBody List<MemberPriceEntity> memberPrices){
+        memberPriceService.saveBatch(memberPrices);
+        return R.ok();
+    }
+
 
     /**
      * 修改

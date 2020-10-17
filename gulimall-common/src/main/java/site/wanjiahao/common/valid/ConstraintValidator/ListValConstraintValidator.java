@@ -1,4 +1,6 @@
-package site.wanjiahao.common.valid;
+package site.wanjiahao.common.valid.ConstraintValidator;
+
+import site.wanjiahao.common.valid.ListVal;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

@@ -1,15 +1,11 @@
 package site.wanjiahao.gulimall.product.service.impl;
 
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.common.utils.Query;
 import site.wanjiahao.gulimall.product.dao.AttrGroupDao;
@@ -19,6 +15,11 @@ import site.wanjiahao.gulimall.product.entity.AttrGroupEntity;
 import site.wanjiahao.gulimall.product.service.AttrAttrgroupRelationService;
 import site.wanjiahao.gulimall.product.service.AttrGroupService;
 import site.wanjiahao.gulimall.product.service.AttrService;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service("attrGroupService")
@@ -110,6 +111,22 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         for (Long attrId : attrIds) {
             attrAttrgroupRelationEntity.setAttrId(attrId);
             attrAttrgroupRelationService.save(attrAttrgroupRelationEntity);
+        }
+    }
+
+    @Override
+    public AttrGroupEntity listById(Long attrGroupId) {
+        return baseMapper.selectById(attrGroupId);
+    }
+
+    @Override
+    public void removeRelation(List<Long> asList) {
+        baseMapper.deleteBatchIds(asList);
+        if (asList != null && asList.size() > 0) {
+            // 删除关系
+            QueryWrapper<AttrAttrgroupRelationEntity> wrapper = new QueryWrapper<>();
+            wrapper.in("attr_group_id", asList);
+            attrAttrgroupRelationService.remove(wrapper);
         }
     }
 }

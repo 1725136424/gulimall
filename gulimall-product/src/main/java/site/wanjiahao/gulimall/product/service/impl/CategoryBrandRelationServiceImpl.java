@@ -1,19 +1,18 @@
 package site.wanjiahao.gulimall.product.service.impl;
 
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.common.utils.Query;
-
 import site.wanjiahao.gulimall.product.dao.CategoryBrandRelationDao;
 import site.wanjiahao.gulimall.product.entity.CategoryBrandRelationEntity;
 import site.wanjiahao.gulimall.product.service.CategoryBrandRelationService;
+
+import java.util.List;
+import java.util.Map;
 
 
 @Service("categoryBrandRelationService")
@@ -55,5 +54,10 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
         wrapper.eq("catelog_id", catId);
         wrapper.eq("brand_id", brandId);
         baseMapper.delete(wrapper);
+    }
+
+    @Override
+    public List<Long> listBrandIdsByCatId(Long catId) {
+        return baseMapper.listBrandIdsByCatId(catId);
     }
 }
