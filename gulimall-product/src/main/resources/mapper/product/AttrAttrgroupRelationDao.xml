@@ -16,6 +16,9 @@
     <select id="selectUniqueGroupId" resultType="java.lang.Long">
         SELECT DISTINCT attr_group_id FROM `pms_attr_attrgroup_relation`
     </select>
+    <select id="listAttrGroupIdByAttrId" resultType="java.lang.Long">
+        SELECT attr_group_id FROM `pms_attr_attrgroup_relation` WHERE attr_id = ${attrId}
+    </select>
 
 
 </mapper>

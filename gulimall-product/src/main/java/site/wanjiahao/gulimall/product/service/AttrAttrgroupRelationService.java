@@ -19,6 +19,8 @@ public interface AttrAttrgroupRelationService extends IService<AttrAttrgroupRela
 
     PageUtils queryPage(Map<String, Object> params);
 
-    List<AttrGroupWithAttrVo> listAttrGroupWithAttr(Integer type);
+    List<AttrGroupWithAttrVo> listAttrGroupWithAttr(Integer type, Long catId);
+
+    Long listAttrGroupIdByAttrId(Long attrId);
 }
 

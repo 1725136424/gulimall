@@ -35,11 +35,13 @@ public class AttrEntities {
 
     private Integer enable;
 
-    private Integer catelogId;
+    private Long catelogId;
 
     @NotNull(message = "快速展示不能为空", groups = SaveSpuInfoGroup.class)
     private Integer showDesc;
 
     @NotNull(message = "属性值不能为空", groups = SaveSpuInfoGroup.class)
     private String attrValue;
+
+    private Long productWithAttrId;
 }

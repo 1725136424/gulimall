@@ -1,20 +1,18 @@
 package site.wanjiahao.gulimall.product.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import site.wanjiahao.common.utils.PageUtils;
+import site.wanjiahao.common.utils.R;
+import site.wanjiahao.gulimall.product.entity.ProductAttrValueEntity;
+import site.wanjiahao.gulimall.product.service.ProductAttrValueService;
+import site.wanjiahao.gulimall.product.vo.BaseAttr;
+
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import site.wanjiahao.gulimall.product.entity.ProductAttrValueEntity;
-import site.wanjiahao.gulimall.product.service.ProductAttrValueService;
-import site.wanjiahao.common.utils.PageUtils;
-import site.wanjiahao.common.utils.R;
 
 
 
@@ -55,12 +53,32 @@ public class ProductAttrValueController {
     }
 
     /**
+     * 获取当前产品下的规格参数数据(并返回属性分组)
+     */
+    @GetMapping("/{spuId}/listAttr")
+    public R listAttr(@PathVariable Long spuId) {
+        List<BaseAttr> baseAttrs = productAttrValueService.listAttrBySpuId(spuId);
+        return R.ok().put("data", baseAttrs);
+    }
+
+
+    /**
      * 保存
      */
     @RequestMapping("/save")
     // @RequiresPermissions("product:productattrvalue:save")
     public R save(@RequestBody ProductAttrValueEntity productAttrValue){
 		productAttrValueService.save(productAttrValue);
+
+        return R.ok();
+    }
+
+    /**
+     * 批量保存
+     */
+    @PostMapping("/saveBatch")
+    public R saveBatch(@RequestBody List<ProductAttrValueEntity> productAttrValues){
+        productAttrValueService.saveBatch(productAttrValues);
 
         return R.ok();
     }

@@ -20,4 +20,6 @@ public interface AttrAttrgroupRelationDao extends BaseMapper<AttrAttrgroupRelati
     List<Long> listAttrIdsByAttrGroupId(@Param("attrGroupId") Long attrGroupId);
 
     List<Long> selectUniqueGroupId();
+
+    Long listAttrGroupIdByAttrId(@Param("attrId") Long attrId);
 }

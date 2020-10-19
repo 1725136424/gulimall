@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,4 +40,11 @@ public class BaseAttr {
     @Valid
     @NotEmpty(message = "分组属性不能为空", groups = SaveSpuInfoGroup.class)
     private List<AttrEntities> attrEntities;
+
+    public List<AttrEntities> getAttrEntities() {
+        if (attrEntities == null) {
+           attrEntities = new ArrayList<>();
+        }
+        return attrEntities;
+    }
 }

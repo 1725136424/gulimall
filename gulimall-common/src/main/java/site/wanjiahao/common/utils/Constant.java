@@ -150,4 +150,33 @@ public class Constant {
         }
     }
 
+    /**
+     * 采购单枚举类型
+     */
+    public enum PurchaseStatus {
+
+        NEW(0, "新建"),
+        ASSIGN(1, "已分配"),
+        RECEIVE(2, "已领取"),
+        COMPLETE(3, "已完成"),
+        FAIL(4, "采购失败");
+
+        private final int status;
+
+        private final String message;
+
+        PurchaseStatus (int status, String message) {
+             this.status = status;
+             this.message = message;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
+
 }

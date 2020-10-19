@@ -56,6 +56,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     @Autowired
     private BrandService brandService;
 
+    @Autowired
+    private AttrAttrgroupRelationService attrAttrgroupRelationService;
+
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         // 复杂查询
@@ -171,7 +174,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             BeanUtils.copyProperties(sku, skuInfoEntity);
             skuInfoEntity.setSpuId(spuId);
             skuInfoEntity.setSaleCount(0L);
-            skuInfoEntity.setCatalogId(spuInfoVo.getCatelogId());
+            skuInfoEntity.setCatelogId(spuInfoVo.getCatelogId());
             skuInfoEntity.setBrandId(spuInfoVo.getBrandId());
             String imageUrl = "";
             List<SkuImages> skuImages = sku.getSkuImages();
@@ -238,4 +241,12 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         });
 
     }
+
+    @Override
+    public void updatePublishStatus(SpuInfoUpdateStatusVo spuInfoUpdateStatusVo) {
+        SpuInfoEntity spuInfoEntity = new SpuInfoEntity();
+        BeanUtils.copyProperties(spuInfoUpdateStatusVo, spuInfoEntity);
+        baseMapper.updateById(spuInfoEntity);
+    }
+
 }

@@ -1,20 +1,18 @@
 package site.wanjiahao.gulimall.ware.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import site.wanjiahao.common.utils.PageUtils;
+import site.wanjiahao.common.utils.R;
+import site.wanjiahao.gulimall.ware.entity.PurchaseEntity;
+import site.wanjiahao.gulimall.ware.service.PurchaseService;
+import site.wanjiahao.gulimall.ware.vo.DonePurchaseVo;
+
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import site.wanjiahao.gulimall.ware.entity.PurchaseEntity;
-import site.wanjiahao.gulimall.ware.service.PurchaseService;
-import site.wanjiahao.common.utils.PageUtils;
-import site.wanjiahao.common.utils.R;
 
 
 
@@ -40,6 +38,33 @@ public class PurchaseController {
         PageUtils page = purchaseService.queryPage(params);
 
         return R.ok().put("page", page);
+    }
+
+    /**
+     * 查询没有在采购的采购单
+     */
+    @GetMapping("/unreceive")
+    public R listUnReceive() {
+        List<PurchaseEntity> purchaseEntities =  purchaseService.listUnReceive();
+        return R.ok().put("data", purchaseEntities);
+    }
+
+    /**
+     * 领取采购单
+     */
+    @PostMapping("/receive")
+    public R receive(@RequestBody List<Long> purchaseIds) {
+        purchaseService.receive(purchaseIds);
+        return R.ok();
+    }
+
+    /**
+     * 完成采购单
+     */
+    @PostMapping("/done")
+    private R done(@RequestBody DonePurchaseVo donePurchaseVo) {
+        purchaseService.done(donePurchaseVo);
+        return R.ok();
     }
 
 
@@ -72,7 +97,15 @@ public class PurchaseController {
     // @RequiresPermissions("ware:purchase:update")
     public R update(@RequestBody PurchaseEntity purchase){
 		purchaseService.updateById(purchase);
+        return R.ok();
+    }
 
+    /**
+     * 分配用户
+     */
+    @PostMapping("/assignUser")
+    public R assignUser(@RequestBody PurchaseEntity purchase){
+        purchaseService.assignUser(purchase);
         return R.ok();
     }
 

@@ -3,7 +3,9 @@ package site.wanjiahao.gulimall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.gulimall.product.entity.ProductAttrValueEntity;
+import site.wanjiahao.gulimall.product.vo.BaseAttr;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +18,7 @@ import java.util.Map;
 public interface ProductAttrValueService extends IService<ProductAttrValueEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    List<BaseAttr> listAttrBySpuId(Long spuId);
 }
 

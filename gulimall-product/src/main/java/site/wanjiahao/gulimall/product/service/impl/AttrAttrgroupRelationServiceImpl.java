@@ -45,7 +45,7 @@ public class AttrAttrgroupRelationServiceImpl extends ServiceImpl<AttrAttrgroupR
 
     @Transactional
     @Override
-    public List<AttrGroupWithAttrVo> listAttrGroupWithAttr(Integer type) {
+    public List<AttrGroupWithAttrVo> listAttrGroupWithAttr(Integer type, Long catId) {
         // 查询所有属性分组对应的属性
         List<Long> attrGroupId = baseMapper.selectUniqueGroupId();
         return attrGroupId.stream().map(item -> {
@@ -69,10 +69,14 @@ public class AttrAttrgroupRelationServiceImpl extends ServiceImpl<AttrAttrgroupR
                 attrGroupWithAttrVo.setAttrEntities(attrEntities);
             }
             return attrGroupWithAttrVo;
-        }).filter(item -> item.getAttrEntities() != null && item.getAttrEntities().size() > 0)
+        }).filter(item -> item.getAttrEntities() != null && item.getAttrEntities().size() > 0 && item.getCatelogId().equals(catId))
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Long listAttrGroupIdByAttrId(Long attrId) {
+        return baseMapper.listAttrGroupIdByAttrId(attrId);
+    }
     private List<Long> listAttrIdsByAttrGroupId(Long attrGroupId) {
         return baseMapper.listAttrIdsByAttrGroupId(attrGroupId);
     }

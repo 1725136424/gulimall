@@ -53,7 +53,7 @@ public class AttrEntity implements Serializable {
 	 * 逻辑删除字段
 	 */
 	@TableLogic(value = "1", delval = "0")
-	private Long enable;
+	private Integer enable;
 	/**
 	 * 所属分类
 	 */

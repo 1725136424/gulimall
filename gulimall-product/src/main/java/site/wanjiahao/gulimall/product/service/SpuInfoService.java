@@ -3,6 +3,7 @@ package site.wanjiahao.gulimall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.gulimall.product.entity.SpuInfoEntity;
+import site.wanjiahao.gulimall.product.vo.SpuInfoUpdateStatusVo;
 import site.wanjiahao.gulimall.product.vo.SpuInfoVo;
 
 import java.util.Map;
@@ -19,5 +20,7 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     void saveSpuInfo(SpuInfoVo spuInfoVo);
+
+    void updatePublishStatus(SpuInfoUpdateStatusVo spuInfoUpdateStatusVo);
 }
 

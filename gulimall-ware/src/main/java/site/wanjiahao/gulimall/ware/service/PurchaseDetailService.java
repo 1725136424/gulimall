@@ -3,6 +3,7 @@ package site.wanjiahao.gulimall.ware.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.gulimall.ware.entity.PurchaseDetailEntity;
+import site.wanjiahao.gulimall.ware.vo.MergeVo;
 
 import java.util.Map;
 
@@ -16,5 +17,7 @@ import java.util.Map;
 public interface PurchaseDetailService extends IService<PurchaseDetailEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    void merge(MergeVo mergeVo);
 }
 

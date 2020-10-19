@@ -8,6 +8,7 @@ import site.wanjiahao.common.utils.R;
 import site.wanjiahao.common.valid.SaveSpuInfoGroup;
 import site.wanjiahao.gulimall.product.entity.SpuInfoEntity;
 import site.wanjiahao.gulimall.product.service.SpuInfoService;
+import site.wanjiahao.gulimall.product.vo.SpuInfoUpdateStatusVo;
 import site.wanjiahao.gulimall.product.vo.SpuInfoVo;
 
 import java.util.Arrays;
@@ -79,6 +80,15 @@ public class SpuInfoController {
     public R update(@RequestBody SpuInfoEntity spuInfo){
 		spuInfoService.updateById(spuInfo);
 
+        return R.ok();
+    }
+
+    /**
+     * 修改spu上架状态
+     */
+    @PostMapping("/updatePublishStatus")
+    public R updatePublishStatus(@RequestBody SpuInfoUpdateStatusVo spuInfoUpdateStatusVo) {
+        spuInfoService.updatePublishStatus(spuInfoUpdateStatusVo);
         return R.ok();
     }
 

@@ -40,11 +40,12 @@ public class AttrAttrgroupRelationController {
     }
 
     /**
-     * 获取基本属性以及其对应的属性组（需要注意的是其他属性也获取）
+     * 获取当前分类基本属性以及其对应的属性组（需要注意的是其他属性也获取）
      */
-    @GetMapping("/listAttrGroupWithAttr/{type}")
-    public R listAttrGroupWithBaseAttr(@PathVariable("type") Integer type) {
-        List<AttrGroupWithAttrVo> attrGroupWithAttrVos = attrAttrgroupRelationService.listAttrGroupWithAttr(type);
+    @GetMapping("/listAttrGroupWithAttr/type/{type}/category/{catId}")
+    public R listAttrGroupWithBaseAttr(@PathVariable("type") Integer type,
+                                       @PathVariable("catId") Long catId) {
+        List<AttrGroupWithAttrVo> attrGroupWithAttrVos = attrAttrgroupRelationService.listAttrGroupWithAttr(type, catId);
         return R.ok().put("data", attrGroupWithAttrVos);
     }
 
