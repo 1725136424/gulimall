@@ -9,16 +9,15 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.wanjiahao.common.to.MemberPriceTo;
-import site.wanjiahao.common.to.SkuFullReductionTo;
-import site.wanjiahao.common.to.SkuLadderTo;
-import site.wanjiahao.common.to.SpuBoundsTo;
+import site.wanjiahao.common.to.*;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.common.utils.Query;
 import site.wanjiahao.common.utils.R;
 import site.wanjiahao.gulimall.product.dao.SpuInfoDao;
 import site.wanjiahao.gulimall.product.entity.*;
 import site.wanjiahao.gulimall.product.feign.CouponFeignService;
+import site.wanjiahao.gulimall.product.feign.ESFeignService;
+import site.wanjiahao.gulimall.product.feign.WareFeignService;
 import site.wanjiahao.gulimall.product.service.*;
 import site.wanjiahao.gulimall.product.vo.*;
 
@@ -58,6 +57,12 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Autowired
     private AttrAttrgroupRelationService attrAttrgroupRelationService;
+
+    @Autowired
+    private WareFeignService wareFeignService;
+
+    @Autowired
+    private ESFeignService esFeignService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -179,7 +184,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             String imageUrl = "";
             List<SkuImages> skuImages = sku.getSkuImages();
             for (SkuImages skuImage: skuImages) {
-                if (skuImage.getDefaultImage() == 1) {
+                if (skuImage.getDefaultImage().equals(1)) {
                     imageUrl = skuImage.getUrl();
                     break;
                 }
@@ -233,20 +238,137 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             skuImagesService.saveBatch(skuImagesEntities);
 
             // 6.6保存sku对应的销售属性信息 `pms_sku_sale_attr_value`
-            Attr attr = sku.getAttr();
-            SkuSaleAttrValueEntity skuSaleAttrValueEntity = new SkuSaleAttrValueEntity();
-            skuSaleAttrValueEntity.setSkuId(skuInfoEntity.getSkuId());
-            BeanUtils.copyProperties(attr, skuSaleAttrValueEntity);
-            skuSaleAttrValueService.save(skuSaleAttrValueEntity);
+            List<Attr> attrs = sku.getAttrs();
+            List<SkuSaleAttrValueEntity> attrEntities = attrs.stream().map(item -> {
+                SkuSaleAttrValueEntity skuSaleAttrValueEntity = new SkuSaleAttrValueEntity();
+                skuSaleAttrValueEntity.setSkuId(skuInfoEntity.getSkuId());
+                BeanUtils.copyProperties(item, skuSaleAttrValueEntity);
+                return skuSaleAttrValueEntity;
+            }).collect(Collectors.toList());
+            skuSaleAttrValueService.saveBatch(attrEntities);
         });
 
     }
 
+    @Transactional
     @Override
     public void updatePublishStatus(SpuInfoUpdateStatusVo spuInfoUpdateStatusVo) {
-        SpuInfoEntity spuInfoEntity = new SpuInfoEntity();
-        BeanUtils.copyProperties(spuInfoUpdateStatusVo, spuInfoEntity);
+        // 判断当前是否是上架商品还是下架商品
+        Integer publishStatus = spuInfoUpdateStatusVo.getPublishStatus();
+        Long spuId = spuInfoUpdateStatusVo.getId();
+        SpuInfoEntity spuInfoEntity = listById(spuId);
+        // 查询当前spu所有sku的id
+        List<Long> allSkuIds = skuInfoService.listIdsBySpuId(spuId);
+        // 1.查询当前spu对应的sku信息
+        // 查询当前不同颜色的基本产品id
+        List<Long> colorPid = productAttrValueService.listPidByColor();
+        List<Long> skuIds = new ArrayList<>();
+        // 过滤出当前产品id
+        for (Long aLong : colorPid) {
+            for (Long allSkuId : allSkuIds) {
+                if (aLong.equals(allSkuId)) {
+                    skuIds.add(aLong);
+                }
+            }
+        }
+        List<SkuInfoEntity> skuInfoEntities = skuInfoService.listByIds(skuIds);
+        if (publishStatus.equals(0)) {
+            // 下架 --> 从ES服务器中删除
+            R res = esFeignService.delete(spuId);
+            try {
+                boolean data = (boolean) res.get("data");
+                if (!data) {
+                    log.error("检索服务远程调用异常");
+                }
+            } catch (Exception e) {
+                log.error(e.toString());
+            }
+        } else {
+            // 查询所有sku的库存信息
+            Map<String, Boolean> data = null;
+            boolean spuHasStock = false;
+            try {
+                // 当前sku对应是否有库存
+                R resStock = wareFeignService.listAllStock();
+                data = (Map<String, Boolean>) resStock.get("data");
+                Collection<Boolean> values = data.values();
+                for (Boolean value : values) {
+                    if (value) {
+                        spuHasStock = true;
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                log.error("库存服务远程调用异常{}", e.toString());
+            }
+            // 上架 --> 保存ES服务器中
+            Map<String, Boolean> finalData = data;
+            ESProductMappingTo esProductMappingTo = new ESProductMappingTo();
+            ESProductMappingTo.Brand brand = new ESProductMappingTo.Brand();
+            ESProductMappingTo.Category category = new ESProductMappingTo.Category();
+            List<ESProductMappingTo.Product> resProduct = skuInfoEntities.stream().map(sku -> {
+                ESProductMappingTo.Product product = new ESProductMappingTo.Product();
+                product.setSkuId(sku.getSkuId());
+                product.setSaleCount(sku.getSaleCount());
+                product.setSkuImg(sku.getSkuDefaultImg());
+                product.setSkuTitle(sku.getSkuTitle());
+                product.setSkuPrice(sku.getPrice());
+                product.setHotScore(0F);
+                // 查询当前商品是否存在库存
+                Boolean aBoolean = finalData.get(sku.getSkuId().toString());
+                product.setHasStock(aBoolean == null ? false : aBoolean);
+                return product;
+            }).collect(Collectors.toList());
+            esProductMappingTo.setProducts(resProduct);
+            esProductMappingTo.setSpuId(spuId);
+            // 品牌
+            BrandEntity brandEntity = brandService.listById(spuInfoEntity.getBrandId());
+            brand.setBrandId(brandEntity.getBrandId());
+            brand.setBrandImg(brandEntity.getLogo());
+            brand.setBrandName(brandEntity.getName());
+            esProductMappingTo.setBrand(brand);
+            // 分类
+            CategoryEntity categoryEntity = categoryService.listById(spuInfoEntity.getCatelogId());
+            category.setCategoryId(categoryEntity.getCatId());
+            category.setCategoryName(categoryEntity.getName());
+            esProductMappingTo.setCategory(category);
+            // 属性
+            List<ProductAttrValueEntity> baseAttrs = productAttrValueService.listBaseAttrBySpuId(spuId);
+            List<ESProductMappingTo.Attr> attrs = baseAttrs.stream().map(item -> {
+                ESProductMappingTo.Attr attr = new ESProductMappingTo.Attr();
+                attr.setAttrId(item.getAttrId());
+                attr.setAttrName(item.getAttrName());
+                String[] splitValue = item.getAttrValue().split(",");
+                attr.setAttrValue(Arrays.asList(splitValue));
+                return attr;
+            }).collect(Collectors.toList());
+            esProductMappingTo.setAttrs(attrs);
+            // 添加检索字段
+            List<ESProductMappingTo.Product> products = esProductMappingTo.getProducts();
+            ESProductMappingTo.Product product = products.get(0);
+            esProductMappingTo.setSkuTitle(product.getSkuTitle());
+            esProductMappingTo.setSkuPrice(product.getSkuPrice());
+            esProductMappingTo.setSaleCount(product.getSaleCount());
+            esProductMappingTo.setHotScore(product.getHotScore());
+            esProductMappingTo.setSkuImg(product.getSkuImg());
+            esProductMappingTo.setHasStock(spuHasStock);
+            // 批量保存ES服务器中
+            R saveRes = esFeignService.save(esProductMappingTo);
+            boolean res = (boolean) saveRes.get("data");
+            if (res) {
+                log.info("保存成功");
+            } else {
+                throw new RuntimeException("ES保存异常");
+            }
+        }
+        // 更新状态
+        spuInfoEntity.setPublishStatus(spuInfoUpdateStatusVo.getPublishStatus());
         baseMapper.updateById(spuInfoEntity);
+    }
+
+    @Override
+    public SpuInfoEntity listById(Long spuId) {
+        return baseMapper.selectById(spuId);
     }
 
 }

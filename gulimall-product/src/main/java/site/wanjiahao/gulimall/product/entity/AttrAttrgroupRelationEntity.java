@@ -16,6 +16,7 @@ import java.io.Serializable;
 @Data
 @TableName("pms_attr_attrgroup_relation")
 public class AttrAttrgroupRelationEntity implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 
 	/**

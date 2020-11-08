@@ -80,6 +80,7 @@ public class PurchaseServiceImpl extends ServiceImpl<PurchaseDao, PurchaseEntity
         // 判断当前采购单是否为新生状态 或者已经分配状态
         if (purchase.getStatus().equals(Constant.PurchaseStatus.NEW.getStatus())
                 || purchase.getStatus().equals(Constant.PurchaseStatus.ASSIGN.getStatus())) {
+            purchase.setStatus(Constant.PurchaseStatus.ASSIGN.getStatus());
             // 更新采购单状态
             baseMapper.updateById(purchase);
             // 查询当前采购单是否关联采购单项，并改变其状态

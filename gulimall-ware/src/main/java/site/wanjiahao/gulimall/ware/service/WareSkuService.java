@@ -16,5 +16,9 @@ import java.util.Map;
 public interface WareSkuService extends IService<WareSkuEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    boolean listHasStockBySkuId(Long skuId);
+
+    Map<Long, Boolean> listHasAllStock();
 }
 

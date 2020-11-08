@@ -49,6 +49,6 @@ public class SkuInfo {
     private List<SkuImages> skuImages;
 
     @Valid
-    @NotNull(message = "sku属性不能为空", groups = SaveSpuInfoGroup.class)
-    private Attr attr;
+    @NotEmpty(message = "sku属性不能为空", groups = SaveSpuInfoGroup.class)
+    private List<Attr> attrs;
 }

@@ -14,5 +14,9 @@
         <result property="quickShow" column="quick_show"/>
     </resultMap>
 
+    <select id="listPidByColor" resultType="java.lang.Long">
+        SELECT MIN(sku_id) FROM `pms_sku_sale_attr_value` GROUP BY attr_name, attr_value HAVING attr_name = '颜色'
+    </select>
+
 
 </mapper>

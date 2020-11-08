@@ -11,7 +11,9 @@ import site.wanjiahao.gulimall.ware.dao.WareSkuDao;
 import site.wanjiahao.gulimall.ware.entity.WareSkuEntity;
 import site.wanjiahao.gulimall.ware.service.WareSkuService;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service("wareSkuService")
@@ -40,6 +42,18 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public boolean listHasStockBySkuId(Long skuId) {
+        Long count = baseMapper.listHasStockBySkuId(skuId);
+        return count != null || count > 0;
+    }
+
+    @Override
+    public Map<Long, Boolean> listHasAllStock() {
+        List<WareSkuEntity> wareSkuEntities = baseMapper.listHasAllStock();
+        return wareSkuEntities.stream().collect(Collectors.toMap(WareSkuEntity::getSkuId, item -> item.getStock() > 0));
     }
 
 }

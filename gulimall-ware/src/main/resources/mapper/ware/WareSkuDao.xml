@@ -12,6 +12,13 @@
         <result property="skuName" column="sku_name"/>
         <result property="stockLocked" column="stock_locked"/>
     </resultMap>
+    <select id="listHasStockBySkuId" resultType="java.lang.Long">
+        SELECT SUM(stock - stock_locked) FROM `wms_ware_sku` WHERE sku_id = #{skuId}
+    </select>
+
+    <select id="listHasAllStock" resultMap="wareSkuMap">
+         SELECT sku_id, SUM(stock - stock_locked) as stock FROM `wms_ware_sku` GROUP BY sku_id
+    </select>
 
 
 </mapper>

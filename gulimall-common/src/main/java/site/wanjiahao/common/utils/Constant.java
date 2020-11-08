@@ -1,8 +1,8 @@
 /**
  * Copyright (c) 2016-2019 人人开源 All rights reserved.
- *
+ * <p>
  * https://www.renren.io
- *
+ * <p>
  * 版权所有，侵权必究！
  */
 
@@ -14,8 +14,8 @@ package site.wanjiahao.common.utils;
  * @author Mark sunlightcs@gmail.com
  */
 public class Constant {
-	/** 超级管理员ID */
-	public static final int SUPER_ADMIN = 1;
+    /** 超级管理员ID */
+    public static final int SUPER_ADMIN = 1;
     /**
      * 当前页码
      */
@@ -36,18 +36,29 @@ public class Constant {
      *  升序
      */
     public static final String ASC = "asc";
-	/**
-	 * 菜单类型
-	 * 
-	 * @author chenshun
-	 * @email sunlightcs@gmail.com
-	 * @date 2016年11月15日 下午1:24:29
-	 */
+
+    /**
+     * 价格区间聚合interval
+     */
+    public static final Double interval = 1000.0;
+
+    /**
+     * 检索服务器地址
+     */
+    public static final String searchServer = "http://search.gulimall.com";
+
+    /**
+     * 菜单类型
+     *
+     * @author chenshun
+     * @email sunlightcs@gmail.com
+     * @date 2016年11月15日 下午1:24:29
+     */
     public enum MenuType {
         /**
          * 目录
          */
-    	CATALOG(0),
+        CATALOG(0),
         /**
          * 菜单
          */
@@ -67,10 +78,10 @@ public class Constant {
             return value;
         }
     }
-    
+
     /**
      * 定时任务状态
-     * 
+     *
      * @author chenshun
      * @email sunlightcs@gmail.com
      * @date 2016年12月3日 上午12:07:22
@@ -79,18 +90,18 @@ public class Constant {
         /**
          * 正常
          */
-    	NORMAL(0),
+        NORMAL(0),
         /**
          * 暂停
          */
-    	PAUSE(1);
+        PAUSE(1);
 
         private int value;
 
         ScheduleStatus(int value) {
             this.value = value;
         }
-        
+
         public int getValue() {
             return value;
         }
@@ -136,7 +147,7 @@ public class Constant {
 
         private final String message;
 
-        AttrType(Integer code,String message) {
+        AttrType(Integer code, String message) {
             this.code = code;
             this.message = message;
         }
@@ -165,9 +176,9 @@ public class Constant {
 
         private final String message;
 
-        PurchaseStatus (int status, String message) {
-             this.status = status;
-             this.message = message;
+        PurchaseStatus(int status, String message) {
+            this.status = status;
+            this.message = message;
         }
 
         public int getStatus() {
@@ -176,6 +187,71 @@ public class Constant {
 
         public String getMessage() {
             return message;
+        }
+    }
+
+    /**
+     * ES索引库
+     */
+    public enum ESIndex {
+
+        PRODUCT_INDEX("gulimall_product");
+
+        private final String index;
+
+        ESIndex(String index) {
+            this.index = index;
+        }
+
+        public String getIndex() {
+            return index;
+        }
+    }
+
+    /**
+     * 分类层级枚举
+     */
+    public enum CategoryLevel {
+        ONE(1), TWO(2), THREE(3);
+
+        private final Integer level;
+
+        CategoryLevel(Integer level) {
+            this.level = level;
+        }
+
+        public Integer getLevel() {
+            return level;
+        }
+    }
+
+    /**
+     * ES聚合名称
+     */
+    public enum ESAggregation {
+        // 品牌聚合枚举
+        BRAND_AGG("brand_agg"),
+        BRAND_NAME_AGG("brand_name_agg"),
+        BRAND_IMG_AGG("brand_img_agg"),
+        // 分类聚合枚举
+        CATEGORY_AGG("category_agg"),
+        CATEGORY_NAME_AGG("category_name_agg"),
+        // 属性枚举
+        ATTR_AGG("attr_agg"),
+        ATTR_ID_AGG("attr_id_agg"),
+        ATTR_NAME_AGG("attr_name_agg"),
+        ATTR_VALUE_AGG("attr_value_agg"),
+        // 价格区间枚举
+        PRICE_RANGE("price_range");
+
+        private final String value;
+
+        ESAggregation(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
         }
     }
 

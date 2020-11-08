@@ -1,20 +1,16 @@
 package site.wanjiahao.gulimall.ware.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import site.wanjiahao.common.utils.PageUtils;
+import site.wanjiahao.common.utils.R;
+import site.wanjiahao.gulimall.ware.entity.WareSkuEntity;
+import site.wanjiahao.gulimall.ware.service.WareSkuService;
+
 import java.util.Arrays;
 import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import site.wanjiahao.gulimall.ware.entity.WareSkuEntity;
-import site.wanjiahao.gulimall.ware.service.WareSkuService;
-import site.wanjiahao.common.utils.PageUtils;
-import site.wanjiahao.common.utils.R;
 
 
 
@@ -42,6 +38,23 @@ public class WareSkuController {
         return R.ok().put("page", page);
     }
 
+    /**
+     * 查询当前sku是否存在库存 stock - lockStock
+     */
+    @GetMapping("/sku/{skuId}/hasStock")
+    public R hasStock(@PathVariable("skuId") Long skuId) {
+        boolean res = wareSkuService.listHasStockBySkuId(skuId);
+        return R.ok().put("data", res);
+    }
+
+    /**
+     * 查询商品的所有库存信息
+     */
+    @GetMapping("/sku/hasAllStock")
+    public R hasAllStock() {
+        Map<Long, Boolean> resMap =  wareSkuService.listHasAllStock();
+        return R.ok().put("data", resMap);
+    }
 
     /**
      * 信息

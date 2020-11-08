@@ -11,6 +11,7 @@ import site.wanjiahao.gulimall.product.dao.SkuInfoDao;
 import site.wanjiahao.gulimall.product.entity.SkuInfoEntity;
 import site.wanjiahao.gulimall.product.service.SkuInfoService;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -59,4 +60,8 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
         return new PageUtils(page);
     }
 
+    @Override
+    public List<Long> listIdsBySpuId(Long spuId) {
+        return baseMapper.listIdsBySpuId(spuId);
+    }
 }

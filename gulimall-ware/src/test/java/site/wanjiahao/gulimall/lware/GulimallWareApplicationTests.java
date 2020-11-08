@@ -3,11 +3,10 @@ package site.wanjiahao.gulimall.lware;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import site.wanjiahao.common.utils.R;
 import site.wanjiahao.gulimall.ware.GulimallWareApplication;
 import site.wanjiahao.gulimall.ware.entity.PurchaseEntity;
 import site.wanjiahao.gulimall.ware.service.PurchaseService;
-
-import java.time.LocalDateTime;
 
 @SpringBootTest(classes = GulimallWareApplication.class)
 class GulimallWareApplicationTests {
@@ -25,7 +24,9 @@ class GulimallWareApplicationTests {
 
     @Test
     void test() {
-        System.out.println(LocalDateTime.now());
+        R r = R.ok().put("data", 111);
+        System.out.println(r);
+
     }
 
 }

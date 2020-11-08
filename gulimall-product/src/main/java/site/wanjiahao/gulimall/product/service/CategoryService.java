@@ -3,6 +3,7 @@ package site.wanjiahao.gulimall.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.gulimall.product.entity.CategoryEntity;
+import site.wanjiahao.gulimall.product.vo.IndexCategoryLevel2RespVo;
 
 import java.util.List;
 import java.util.Map;
@@ -29,5 +30,8 @@ public interface CategoryService extends IService<CategoryEntity> {
     CategoryEntity listById(Long catelogId);
 
     PageUtils listWithPageByBranId(Map<String, Object> params, Long brandId);
+
+    Map<String, List<IndexCategoryLevel2RespVo>> listCateLevel2();
+
 }
 

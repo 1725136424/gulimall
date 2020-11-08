@@ -18,5 +18,9 @@
         <result property="saleCount" column="sale_count"/>
     </resultMap>
 
+    <select id="listIdsBySpuId" resultType="java.lang.Long">
+        SELECT sku_id FROM `pms_sku_info` WHERE spu_id = #{spuId}
+    </select>
+
 
 </mapper>

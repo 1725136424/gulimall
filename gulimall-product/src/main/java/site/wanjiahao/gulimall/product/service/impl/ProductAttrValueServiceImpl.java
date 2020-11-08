@@ -99,4 +99,13 @@ public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao
         return false;
     }
 
+    @Override
+    public List<Long> listPidByColor() {
+        return baseMapper.listPidByColor();
+    }
+
+    @Override
+    public List<ProductAttrValueEntity> listBaseAttrBySpuId(Long spuId) {
+        return list(new QueryWrapper<ProductAttrValueEntity>().eq("spu_id", spuId));
+    }
 }
