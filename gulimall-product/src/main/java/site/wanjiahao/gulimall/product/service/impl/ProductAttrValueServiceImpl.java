@@ -17,6 +17,7 @@ import site.wanjiahao.gulimall.product.service.AttrGroupService;
 import site.wanjiahao.gulimall.product.service.ProductAttrValueService;
 import site.wanjiahao.gulimall.product.vo.AttrEntities;
 import site.wanjiahao.gulimall.product.vo.BaseAttr;
+import site.wanjiahao.gulimall.product.vo.SimpleAttrGroupWithAttrVo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,5 +108,10 @@ public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao
     @Override
     public List<ProductAttrValueEntity> listBaseAttrBySpuId(Long spuId) {
         return list(new QueryWrapper<ProductAttrValueEntity>().eq("spu_id", spuId));
+    }
+
+    @Override
+    public List<SimpleAttrGroupWithAttrVo> listSimpleGroupAndAttr(Long spuId) {
+        return baseMapper.listSimpleGroupAndAttr(spuId);
     }
 }

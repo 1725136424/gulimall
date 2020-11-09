@@ -151,7 +151,8 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         }
 
         // 4.保存描述图片信息 `pms_spu_info_desc` (json字符串保存)
-        String descriptionStr = StringUtils.join(spuInfoVo.getDescription(), ",");
+        List<String> imgStr = spuInfoVo.getDescription().stream().map(Description::getUrl).collect(Collectors.toList());
+        String descriptionStr = StringUtils.join(imgStr, ",");
         SpuInfoDescEntity spuInfoDescEntity = new SpuInfoDescEntity();
         spuInfoDescEntity.setSpuId(spuId);
         spuInfoDescEntity.setDecript(descriptionStr);

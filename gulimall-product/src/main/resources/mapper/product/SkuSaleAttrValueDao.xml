@@ -13,5 +13,26 @@
         <result property="attrSort" column="attr_sort"/>
     </resultMap>
 
+    <resultMap id="saleAttr" type="site.wanjiahao.gulimall.product.vo.SaleAttrVos">
+        <result property="attrId" column="attr_id"/>
+        <result property="attrName" column="attr_name"/>
+        <collection property="attrValuesWithSkuIdsVos" ofType="site.wanjiahao.gulimall.product.vo.AttrValuesWithSkuIdsVo">
+            <result column="attr_value" property="attrValue"/>
+            <result column="skuIds" property="skuIds"/>
+        </collection>
+    </resultMap>
+
+    <select id="listSaleAttrBySkuIds" parameterType="list" resultMap="saleAttr">
+        SELECT attr_name, attr_id, attr_value, GROUP_CONCAT(DISTINCT sku_id) AS skuIds
+        FROM `pms_sku_sale_attr_value`
+        <where>
+            sku_id IN
+            <foreach collection="list" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </where>
+        GROUP BY attr_name, attr_id, attr_value
+    </select>
+
 
 </mapper>

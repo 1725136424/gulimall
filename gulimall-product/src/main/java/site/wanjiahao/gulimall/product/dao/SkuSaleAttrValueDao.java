@@ -1,8 +1,11 @@
 package site.wanjiahao.gulimall.product.dao;
 
-import site.wanjiahao.gulimall.product.entity.SkuSaleAttrValueEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import site.wanjiahao.gulimall.product.entity.SkuSaleAttrValueEntity;
+import site.wanjiahao.gulimall.product.vo.SaleAttrVos;
+
+import java.util.List;
 
 /**
  * sku销售属性&值
@@ -13,5 +16,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SkuSaleAttrValueDao extends BaseMapper<SkuSaleAttrValueEntity> {
-	
+
+    List<SaleAttrVos> listSaleAttrBySkuIds(List<Long> skuIds);
 }

@@ -1,8 +1,9 @@
 package site.wanjiahao.gulimall.product.dao;
 
-import site.wanjiahao.gulimall.product.entity.ProductAttrValueEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import site.wanjiahao.gulimall.product.entity.ProductAttrValueEntity;
+import site.wanjiahao.gulimall.product.vo.SimpleAttrGroupWithAttrVo;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ import java.util.List;
 public interface ProductAttrValueDao extends BaseMapper<ProductAttrValueEntity> {
 
     List<Long> listPidByColor();
+
+    List<SimpleAttrGroupWithAttrVo> listSimpleGroupAndAttr(Long spuId);
 }

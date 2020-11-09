@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.gulimall.product.entity.ProductAttrValueEntity;
 import site.wanjiahao.gulimall.product.vo.BaseAttr;
+import site.wanjiahao.gulimall.product.vo.SimpleAttrGroupWithAttrVo;
 
 import java.util.List;
 import java.util.Map;
@@ -24,5 +25,7 @@ public interface ProductAttrValueService extends IService<ProductAttrValueEntity
     List<Long> listPidByColor();
 
     List<ProductAttrValueEntity> listBaseAttrBySpuId(Long spuId);
+
+    List<SimpleAttrGroupWithAttrVo> listSimpleGroupAndAttr(Long spuId);
 }
 
