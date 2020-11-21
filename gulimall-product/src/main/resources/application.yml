@@ -24,6 +24,8 @@ spring:
     cache: false
   redis:
     host: 192.168.56.10
+  session:
+    store-type: redis
 mybatis-plus:
   mapper-locations: classpath*:mapper/**/*.xml
   global-config:
@@ -35,3 +37,9 @@ mybatis-plus:
 logging:
   level:
     site.wanjiahao.gulimall.product: error
+gulimall:
+  thread:
+    core-pool-size: 20
+    maximum-pool-size: 200
+    keep-alive-time: 10
+    capacity: 100000

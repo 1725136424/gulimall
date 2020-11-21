@@ -33,6 +33,10 @@
         </where>
         GROUP BY attr_name, attr_id, attr_value
     </select>
+    <select id="infoAttr"
+            resultType="site.wanjiahao.gulimall.product.vo.Attr">
+        SELECT attr_id, attr_name, attr_value FROM `pms_sku_sale_attr_value` WHERE sku_id = #{skuId} GROUP BY attr_id, attr_name, attr_value
+    </select>
 
 
 </mapper>

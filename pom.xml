@@ -17,8 +17,10 @@
         <module>renren-generator</module>
         <module>gulimall-common</module>
         <module>gulimall-gateway</module>
-        <module>gulimall-third-part</module>
+        <module>gulimall-third-party</module>
         <module>gulimall-search</module>
+        <module>gulimall-auth-server</module>
+        <module>gulimall-cart</module>
     </modules>
     <modelVersion>4.0.0</modelVersion>
     <groupId>site.wanjiahao.gulimall</groupId>

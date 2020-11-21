@@ -1,20 +1,18 @@
 package site.wanjiahao.gulimall.product.app;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import site.wanjiahao.common.utils.PageUtils;
+import site.wanjiahao.common.utils.R;
+import site.wanjiahao.gulimall.product.entity.SkuSaleAttrValueEntity;
+import site.wanjiahao.gulimall.product.service.SkuSaleAttrValueService;
+import site.wanjiahao.gulimall.product.vo.Attr;
+
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import site.wanjiahao.gulimall.product.entity.SkuSaleAttrValueEntity;
-import site.wanjiahao.gulimall.product.service.SkuSaleAttrValueService;
-import site.wanjiahao.common.utils.PageUtils;
-import site.wanjiahao.common.utils.R;
 
 
 
@@ -28,6 +26,7 @@ import site.wanjiahao.common.utils.R;
 @RestController
 @RequestMapping("product/skusaleattrvalue")
 public class SkuSaleAttrValueController {
+
     @Autowired
     private SkuSaleAttrValueService skuSaleAttrValueService;
 
@@ -42,7 +41,6 @@ public class SkuSaleAttrValueController {
         return R.ok().put("page", page);
     }
 
-
     /**
      * 信息
      */
@@ -52,6 +50,15 @@ public class SkuSaleAttrValueController {
 		SkuSaleAttrValueEntity skuSaleAttrValue = skuSaleAttrValueService.getById(id);
 
         return R.ok().put("skuSaleAttrValue", skuSaleAttrValue);
+    }
+
+    /**
+     * 查询属性名称以及属性值信息
+     */
+    @GetMapping("/saleAttr/sku/{skuId}")
+    public R infoAttr(@PathVariable("skuId") Long skuId) {
+        List<Attr> attrs = skuSaleAttrValueService.infoAttr(skuId);
+        return R.ok().put("attrs", attrs);
     }
 
     /**

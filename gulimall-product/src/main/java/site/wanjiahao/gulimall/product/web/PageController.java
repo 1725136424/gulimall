@@ -16,6 +16,9 @@ import site.wanjiahao.gulimall.product.vo.SaleAttrVos;
 import site.wanjiahao.gulimall.product.vo.SimpleAttrGroupWithAttrVo;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 页面跳转controller
@@ -40,9 +43,9 @@ public class PageController {
     
     @Autowired
     private ProductAttrValueService productAttrValueService;
-    
+
     @Autowired
-    private SpuInfoService spuInfoService;
+    private ThreadPoolExecutor threadPoolExecutor;
 
     @RequestMapping({"/", "/index.html"})
     public String home(Model model) {
@@ -53,30 +56,54 @@ public class PageController {
     }
 
     @GetMapping("/{skuId}.html")
-    public String item(@PathVariable("skuId") Long skuId, Model model) {
+    public String item(@PathVariable("skuId") Long skuId, Model model) throws ExecutionException, InterruptedException {
+        // 异步编排优化
         ItemResponseVo itemResponseVo = new ItemResponseVo();
-        // 1.获取sku的基本信息 `pms_sku_info`
-        SkuInfoEntity skuInfoEntity = skuInfoService.getById(skuId);
-        
-        // 2.获取sku的图片信息 `pms_sku_images`
-        List<SkuImagesEntity> skuImagesEntities = skuImagesService.listBySkuId(skuId);
+        CompletableFuture<SkuInfoEntity> skuInfoEntityCompletableFuture = CompletableFuture.supplyAsync(() -> {
+            // 1.获取sku的基本信息 `pms_sku_info`
+            SkuInfoEntity skuInfoEntity = skuInfoService.getById(skuId);
+            itemResponseVo.setSkuInfoEntity(skuInfoEntity);
+            return skuInfoEntity;
+        }, threadPoolExecutor);
 
-        // 3.获取sku的销售属性 `pms_sku_sale_attr_value`
+
+        CompletableFuture<Void> skuImageFuture = CompletableFuture.runAsync(() -> {
+            // 2.获取sku的图片信息 `pms_sku_images`
+            List<SkuImagesEntity> skuImagesEntities = skuImagesService.listBySkuId(skuId);
+            itemResponseVo.setSkuImagesEntities(skuImagesEntities);
+        }, threadPoolExecutor);
+
+
+        CompletableFuture<Void> skuInfoFuture = skuInfoEntityCompletableFuture.thenAcceptAsync((res) -> {
+            // 3.获取sku的销售属性 `pms_sku_sale_attr_value`
             // 3.1 查询当前spu下所有的sku ids信息
-        List<Long> skuIds = skuInfoService.listIdsBySpuId(skuInfoEntity.getSpuId());
+            List<Long> skuIds = skuInfoService.listIdsBySpuId(res.getSpuId());
             // 3.2 查询sku下所有的销售属性信息
-        List<SaleAttrVos> saleAttrVos = skuSaleAttrValueService.listSaleAttrBySkuIds(skuIds);
+            List<SaleAttrVos> saleAttrVos = skuSaleAttrValueService.listSaleAttrBySkuIds(skuIds);
+            itemResponseVo.setSaleAttrVos(saleAttrVos);
+        }, threadPoolExecutor);
 
-        // 4.获取spu的描述信息 `pms_spu_info_desc`
-        SpuInfoDescEntity spuInfoDescEntity = spuInfoDescService.getById(skuInfoEntity.getSpuId());
 
-        // 5.获取spu的基本属性信息 `pms_product_attr_value`
-        List<SimpleAttrGroupWithAttrVo> simpleAttrGroupWithAttrVos = productAttrValueService.listSimpleGroupAndAttr(skuInfoEntity.getSpuId());
-        itemResponseVo.setSkuInfoEntity(skuInfoEntity);
-        itemResponseVo.setSkuImagesEntities(skuImagesEntities);
-        itemResponseVo.setSaleAttrVos(saleAttrVos);
-        itemResponseVo.setSpuInfoDescEntity(spuInfoDescEntity);
-        itemResponseVo.setSimpleAttrGroupWithAttrVos(simpleAttrGroupWithAttrVos);
+        CompletableFuture<Void> skuInfoDescFuture = skuInfoEntityCompletableFuture.thenAcceptAsync((res) -> {
+            // 4.获取spu的描述信息 `pms_spu_info_desc`
+            SpuInfoDescEntity spuInfoDescEntity = spuInfoDescService.getById(res.getSpuId());
+            itemResponseVo.setSpuInfoDescEntity(spuInfoDescEntity);
+        }, threadPoolExecutor);
+
+
+        CompletableFuture<Void> attrFuture = skuInfoEntityCompletableFuture.thenAcceptAsync((res) -> {
+            // 5.获取spu的基本属性信息 `pms_product_attr_value`
+            List<SimpleAttrGroupWithAttrVo> simpleAttrGroupWithAttrVos = productAttrValueService.listSimpleGroupAndAttr(res.getSpuId());
+            itemResponseVo.setSimpleAttrGroupWithAttrVos(simpleAttrGroupWithAttrVos);
+        }, threadPoolExecutor);
+
+        CompletableFuture<Void> allFuture = CompletableFuture.allOf(skuImageFuture,
+                skuInfoFuture,
+                skuInfoDescFuture,
+                attrFuture);
+
+        // 等待所有结果完成
+        allFuture.get();
         model.addAttribute("item", itemResponseVo);
         return "item";
     }

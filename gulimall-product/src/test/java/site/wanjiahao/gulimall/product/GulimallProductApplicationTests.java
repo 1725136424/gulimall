@@ -6,6 +6,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import site.wanjiahao.gulimall.product.entity.BrandEntity;
 import site.wanjiahao.gulimall.product.service.BrandService;
 import java.util.List;
@@ -50,4 +51,21 @@ class GulimallProductApplicationTests {
     }
 
 
+}
+
+class Test1 {
+    @Test
+    void test1() {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String encode = bCryptPasswordEncoder.encode("1725136424");
+        System.out.println(encode);
+    }
+
+    @Test
+    void test2() {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        boolean matches = bCryptPasswordEncoder.matches("13684819080",
+                "$2a$10$T2NxQiBXVikCpjwLRUM09./wGE.FQGUAQsTtsydKoKMGsGnbXH69.");
+        System.out.println(matches);
+    }
 }

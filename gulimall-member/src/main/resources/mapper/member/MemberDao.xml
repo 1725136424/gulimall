@@ -23,7 +23,13 @@
         <result property="growth" column="growth"/>
         <result property="status" column="status"/>
         <result property="createTime" column="create_time"/>
+        <result property="uid" column="uid"/>
+        <result property="accessToken" column="access_token"/>
+        <result property="expiresIn" column="expires_in"/>
     </resultMap>
+    <select id="queryExist" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM `ums_member` WHERE username = #{username} OR mobile = #{phone}
+    </select>
 
 
 </mapper>

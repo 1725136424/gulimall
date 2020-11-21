@@ -9,6 +9,7 @@ import site.wanjiahao.common.utils.Query;
 import site.wanjiahao.gulimall.product.dao.SkuSaleAttrValueDao;
 import site.wanjiahao.gulimall.product.entity.SkuSaleAttrValueEntity;
 import site.wanjiahao.gulimall.product.service.SkuSaleAttrValueService;
+import site.wanjiahao.gulimall.product.vo.Attr;
 import site.wanjiahao.gulimall.product.vo.SaleAttrVos;
 
 import java.util.List;
@@ -31,5 +32,10 @@ public class SkuSaleAttrValueServiceImpl extends ServiceImpl<SkuSaleAttrValueDao
     @Override
     public List<SaleAttrVos> listSaleAttrBySkuIds(List<Long> skuIds) {
         return baseMapper.listSaleAttrBySkuIds(skuIds);
+    }
+
+    @Override
+    public List<Attr> infoAttr(Long skuId) {
+        return baseMapper.infoAttr(skuId);
     }
 }

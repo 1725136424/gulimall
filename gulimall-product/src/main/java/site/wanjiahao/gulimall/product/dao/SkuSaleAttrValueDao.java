@@ -2,7 +2,9 @@ package site.wanjiahao.gulimall.product.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import site.wanjiahao.gulimall.product.entity.SkuSaleAttrValueEntity;
+import site.wanjiahao.gulimall.product.vo.Attr;
 import site.wanjiahao.gulimall.product.vo.SaleAttrVos;
 
 import java.util.List;
@@ -18,4 +20,6 @@ import java.util.List;
 public interface SkuSaleAttrValueDao extends BaseMapper<SkuSaleAttrValueEntity> {
 
     List<SaleAttrVos> listSaleAttrBySkuIds(List<Long> skuIds);
+
+    List<Attr> infoAttr(@Param("skuId") Long skuId);
 }

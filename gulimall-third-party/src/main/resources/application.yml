@@ -1,0 +1,19 @@
+server:
+  port: 30000
+spring:
+  application:
+    name: gulimall-third-party
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    alicloud:
+      sms:
+        access-key-id: LTAI4G454cBvWSbPFH4HEVHi
+        access-secret: agDTsCPziuMMBbolQlucIa5cCkKlEn
+        sys-domain: dysmsapi.aliyuncs.com
+        sys-version: "2017-05-25"
+        region-id: cn-hangzhou
+        sign-name: 豪大大博客
+        template-code: SMS_205434954
+

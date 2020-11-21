@@ -48,6 +48,11 @@ public class Constant {
     public static final String searchServer = "http://search.gulimall.com";
 
     /**
+     * redis验证码前缀
+     */
+    public static final String CODE_PREFIX = "sms";
+
+    /**
      * 菜单类型
      *
      * @author chenshun

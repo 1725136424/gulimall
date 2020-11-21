@@ -5,7 +5,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import site.wanjiahao.common.exception.BizCodeEnum;
+import site.wanjiahao.common.code.BizCodeEnum;
 import site.wanjiahao.common.utils.R;
 
 import java.util.HashMap;

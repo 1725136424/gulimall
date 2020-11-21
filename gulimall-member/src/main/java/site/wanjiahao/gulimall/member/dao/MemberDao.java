@@ -1,5 +1,6 @@
 package site.wanjiahao.gulimall.member.dao;
 
+import org.apache.ibatis.annotations.Param;
 import site.wanjiahao.gulimall.member.entity.MemberEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -13,5 +14,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface MemberDao extends BaseMapper<MemberEntity> {
-	
+
+    Integer queryExist(@Param("username") String username, @Param("phone") String phone);
 }
