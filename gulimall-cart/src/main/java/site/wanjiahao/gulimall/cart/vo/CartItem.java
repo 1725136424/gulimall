@@ -8,6 +8,8 @@ import java.util.List;
 @Data
 public class CartItem {
 
+    private Long spuId;
+
     private Long skuId;
 
     private String skuTitle;

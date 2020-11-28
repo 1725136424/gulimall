@@ -14,8 +14,27 @@ spring:
         server-addr: 127.0.0.1:8848
   application:
     name: gulimall-order
+  rabbitmq:
+    host: 192.168.56.10
+    publisher-confirm-type: simple # 发送到Broker的回调开启
+    publisher-returns: true # 异常回调开启
+    template:
+      mandatory: true # 只要抵达队列，以异步发送，优先回调这个函数
+    listener:
+      simple:
+        acknowledge-mode: manual # 手动确认
+  thymeleaf:
+    cache: false
+  redis:
+    host: 192.168.56.10
 mybatis-plus:
   mapper-locations: classpath*:mapper/**/*.xml
   global-config:
     db-config:
       id-type: auto # 自增
+gulimall:
+  thread:
+    core-pool-size: 20
+    maximum-pool-size: 200
+    keep-alive-time: 10
+    capacity: 100000

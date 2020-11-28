@@ -3,6 +3,8 @@ package site.wanjiahao.gulimall.cart.service;
 import site.wanjiahao.gulimall.cart.vo.Cart;
 import site.wanjiahao.gulimall.cart.vo.CartItem;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public interface CartService {
@@ -25,4 +27,7 @@ public interface CartService {
 
     void delete(Long skuId);
 
+    List<CartItem> findCheckCartItem();
+
+    BigDecimal getTotalPrice();
 }

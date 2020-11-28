@@ -49,7 +49,12 @@ spring:
           uri: lb://gulimall-auth-server
           predicates:
             - Host=auth.gulimall.com
-        - id: gulimall_auth_server_route # 购物车服务路由
+        - id: gulimall_cart_route # 购物车服务路由
           uri: lb://gulimall-cart
           predicates:
             - Host=cart.gulimall.com
+        - id: gulimall_order_route # 订单服务服务路由
+          uri: lb://gulimall-order
+          predicates:
+            - Host=order.gulimall.com
+

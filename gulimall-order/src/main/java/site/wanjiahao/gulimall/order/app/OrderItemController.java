@@ -1,4 +1,4 @@
-package site.wanjiahao.gulimall.order.controller;
+package site.wanjiahao.gulimall.order.app;
 
 import java.util.Arrays;
 import java.util.Map;

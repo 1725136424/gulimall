@@ -1,20 +1,18 @@
 package site.wanjiahao.gulimall.member.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import site.wanjiahao.common.utils.PageUtils;
+import site.wanjiahao.common.utils.R;
+import site.wanjiahao.gulimall.member.entity.MemberReceiveAddressEntity;
+import site.wanjiahao.gulimall.member.service.MemberReceiveAddressService;
+
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import site.wanjiahao.gulimall.member.entity.MemberReceiveAddressEntity;
-import site.wanjiahao.gulimall.member.service.MemberReceiveAddressService;
-import site.wanjiahao.common.utils.PageUtils;
-import site.wanjiahao.common.utils.R;
 
 
 
@@ -42,6 +40,30 @@ public class MemberReceiveAddressController {
         return R.ok().put("page", page);
     }
 
+    /**
+     * 获取当前用户的所有收获地址
+     */
+    @GetMapping("/addresses/{memberId}")
+    public List<MemberReceiveAddressEntity> findAllAddress(@PathVariable("memberId") Long memberId) {
+       return memberReceiveAddressService.findAllAddress(memberId);
+    }
+
+    /**
+     * 获取当前用户的默认地址
+     */
+    @GetMapping("/defaultAddress/{memberId}")
+    public MemberReceiveAddressEntity findDefaultAddress(@PathVariable("memberId") Long memberId) {
+        return memberReceiveAddressService.findDefaultAddress(memberId);
+    }
+
+    /**
+     * 获取当前用户的邮费信息
+     */
+    @GetMapping("/getPostage/{addressId}")
+    public R getPostage(@PathVariable("addressId") Long addressId) {
+        BigDecimal postage  = memberReceiveAddressService.getPostage(addressId);
+        return R.ok().put("postage", postage);
+    }
 
     /**
      * 信息

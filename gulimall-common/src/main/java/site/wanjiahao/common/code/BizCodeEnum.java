@@ -9,6 +9,7 @@ package site.wanjiahao.common.code;
  *      13 购物车
  *      14 物流
  *      15 用户
+ *      16 库存
  *  2.后三位代表异常类型
  *      000 未知异常
  *      001 参数校验异常
@@ -22,7 +23,8 @@ public enum BizCodeEnum {
     CURRENT_LIMITING_WITH_CODE(10003, "验证码限流异常"),
     USERNAME_EXIST_EXCEPTION(15002, "用户名存在异常"),
     USERNAME_UNKNOWN_EXCEPTION(15003, "用户名不存在异常"),
-    PASSWORD_ERROR_EXCEPTION(15004, "密码错误异常");
+    PASSWORD_ERROR_EXCEPTION(15004, "密码错误异常"),
+    STOCK_UN_ENOUGH_EXCEPTION(16001, "库存不足");
 
     private Integer bizCode;
 

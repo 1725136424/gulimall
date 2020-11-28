@@ -1,4 +1,4 @@
-package site.wanjiahao.gulimall.order.controller;
+package site.wanjiahao.gulimall.order.app;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -11,33 +11,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import site.wanjiahao.gulimall.order.entity.OrderOperateHistoryEntity;
-import site.wanjiahao.gulimall.order.service.OrderOperateHistoryService;
+import site.wanjiahao.gulimall.order.entity.RefundInfoEntity;
+import site.wanjiahao.gulimall.order.service.RefundInfoService;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.common.utils.R;
 
 
 
 /**
- * 订单操作历史记录
+ * 退款信息
  *
  * @author haodada
  * @email 1725136424@qq.com
  * @date 2020-10-01 16:00:12
  */
 @RestController
-@RequestMapping("order/orderoperatehistory")
-public class OrderOperateHistoryController {
+@RequestMapping("order/refundinfo")
+public class RefundInfoController {
     @Autowired
-    private OrderOperateHistoryService orderOperateHistoryService;
+    private RefundInfoService refundInfoService;
 
     /**
      * 列表
      */
     @RequestMapping("/list")
-    // @RequiresPermissions("order:orderoperatehistory:list")
+    // @RequiresPermissions("order:refundinfo:list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = orderOperateHistoryService.queryPage(params);
+        PageUtils page = refundInfoService.queryPage(params);
 
         return R.ok().put("page", page);
     }
@@ -47,20 +47,20 @@ public class OrderOperateHistoryController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    // @RequiresPermissions("order:orderoperatehistory:info")
+    // @RequiresPermissions("order:refundinfo:info")
     public R info(@PathVariable("id") Long id){
-		OrderOperateHistoryEntity orderOperateHistory = orderOperateHistoryService.getById(id);
+		RefundInfoEntity refundInfo = refundInfoService.getById(id);
 
-        return R.ok().put("orderOperateHistory", orderOperateHistory);
+        return R.ok().put("refundInfo", refundInfo);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    // @RequiresPermissions("order:orderoperatehistory:save")
-    public R save(@RequestBody OrderOperateHistoryEntity orderOperateHistory){
-		orderOperateHistoryService.save(orderOperateHistory);
+    // @RequiresPermissions("order:refundinfo:save")
+    public R save(@RequestBody RefundInfoEntity refundInfo){
+		refundInfoService.save(refundInfo);
 
         return R.ok();
     }
@@ -69,9 +69,9 @@ public class OrderOperateHistoryController {
      * 修改
      */
     @RequestMapping("/update")
-    // @RequiresPermissions("order:orderoperatehistory:update")
-    public R update(@RequestBody OrderOperateHistoryEntity orderOperateHistory){
-		orderOperateHistoryService.updateById(orderOperateHistory);
+    // @RequiresPermissions("order:refundinfo:update")
+    public R update(@RequestBody RefundInfoEntity refundInfo){
+		refundInfoService.updateById(refundInfo);
 
         return R.ok();
     }
@@ -80,9 +80,9 @@ public class OrderOperateHistoryController {
      * 删除
      */
     @RequestMapping("/delete")
-    // @RequiresPermissions("order:orderoperatehistory:delete")
+    // @RequiresPermissions("order:refundinfo:delete")
     public R delete(@RequestBody Long[] ids){
-		orderOperateHistoryService.removeByIds(Arrays.asList(ids));
+		refundInfoService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }

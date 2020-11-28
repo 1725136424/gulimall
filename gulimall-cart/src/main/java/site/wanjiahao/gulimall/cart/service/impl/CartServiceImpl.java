@@ -18,8 +18,10 @@ import site.wanjiahao.gulimall.cart.vo.Attr;
 import site.wanjiahao.gulimall.cart.vo.Cart;
 import site.wanjiahao.gulimall.cart.vo.CartItem;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -109,6 +111,7 @@ public class CartServiceImpl implements CartService {
             cartItem.setSkuId(skuInfo.getSkuId());
             cartItem.setSkuTitle(skuInfo.getSkuTitle());
             cartItem.setSkuImg(skuInfo.getSkuDefaultImg());
+            cartItem.setSpuId(skuInfo.getSpuId());
         }, executor);
 
         CompletableFuture<Void> async2 = CompletableFuture.runAsync(() -> {
@@ -118,7 +121,7 @@ public class CartServiceImpl implements CartService {
             });
             cartItem.setAttrs(attrs);
         }, executor);
-        CompletableFuture.allOf(async1, async1).get();
+        CompletableFuture.allOf(async1, async2).get();
         return cartItem;
     }
 
@@ -190,5 +193,35 @@ public class CartServiceImpl implements CartService {
         } else {
             return stringRedisTemplate.boundHashOps(CartConstant.CART_PREFIX + ":" + userInfo.getUserKey());
         }
+    }
+
+    @Override
+    public List<CartItem> findCheckCartItem() {
+        Cart cart = listCurrentCartList();
+        List<CartItem> cartItems = cart.getCartItems();
+        // 当前购物车的商品数据可能是很久以前放入的商品，而商品的价格在实时的变化，这个就保证不了价格的准确性--》当我们
+        // 确认订单的时候，我们需要重新查询一遍购物车，这样才能保证价格的准确性
+        for (CartItem item : cartItems
+                .stream()
+                .filter(CartItem::getChecked)
+                .collect(Collectors.toList())) {
+            Long skuId = item.getSkuId();
+            // 远程服务查询
+            R r = productFeignService.skuInfo(skuId);
+            SkuInfo skuInfo = JSON.parseObject(JSON.toJSONString(r.get("skuInfo")), SkuInfo.class);
+            item.setPrice(skuInfo.getPrice());
+        }
+        return cartItems;
+    }
+
+    @Override
+    public BigDecimal getTotalPrice() {
+        List<CartItem> checkCartItem = findCheckCartItem();
+        // 求总价钱
+        Optional<BigDecimal> optionalBigDecimal = checkCartItem.stream()
+                .map(CartItem::getTotalPrice)
+                .reduce(BigDecimal::add);
+        // 获取当前optionalBigDecimal的值，如果没有至使用BigDecimal.ZERO
+        return optionalBigDecimal.orElse(BigDecimal.ZERO);
     }
 }

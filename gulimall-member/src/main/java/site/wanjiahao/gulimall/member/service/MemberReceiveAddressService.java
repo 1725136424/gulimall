@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.gulimall.member.entity.MemberReceiveAddressEntity;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +18,11 @@ import java.util.Map;
 public interface MemberReceiveAddressService extends IService<MemberReceiveAddressEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    List<MemberReceiveAddressEntity> findAllAddress(Long memberId);
+
+    BigDecimal getPostage(Long addressId);
+
+    MemberReceiveAddressEntity findDefaultAddress(Long memberId);
 }
 

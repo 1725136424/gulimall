@@ -21,6 +21,7 @@ import site.wanjiahao.gulimall.product.feign.WareFeignService;
 import site.wanjiahao.gulimall.product.service.*;
 import site.wanjiahao.gulimall.product.vo.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -372,4 +373,17 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         return baseMapper.selectById(spuId);
     }
 
+    @Override
+    public Map<Long, BigDecimal> getWeightBySpuIds(List<Long> spuIds) {
+        return listByIds(spuIds).stream().collect(Collectors.toMap(SpuInfoEntity::getId, SpuInfoEntity::getWeight));
+    }
+
+    @Override
+    public Map<Long, SpuInfoEntity> listSpuInfoMapByIds(List<Long> spuIds) {
+        if (spuIds != null && spuIds.size() > 0) {
+            return listByIds(spuIds).stream().collect(Collectors.toMap(SpuInfoEntity::getId, (item) -> item));
+        } else {
+            return null;
+        }
+    }
 }

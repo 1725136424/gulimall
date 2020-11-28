@@ -2,12 +2,14 @@ package site.wanjiahao.gulimall.ware.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import site.wanjiahao.common.code.BizCodeEnum;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.common.utils.R;
 import site.wanjiahao.gulimall.ware.entity.WareSkuEntity;
 import site.wanjiahao.gulimall.ware.service.WareSkuService;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -45,6 +47,30 @@ public class WareSkuController {
     public R hasStock(@PathVariable("skuId") Long skuId) {
         boolean res = wareSkuService.listHasStockBySkuId(skuId);
         return R.ok().put("data", res);
+    }
+
+    /**
+     * 锁定库存
+     */
+    @PostMapping("/lockStock")
+    public R lockStock(@RequestBody Map<Long, Integer> lockMap) {
+        try {
+            wareSkuService.lockStock(lockMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.error(BizCodeEnum.STOCK_UN_ENOUGH_EXCEPTION.getBizCode(),
+                    BizCodeEnum.STOCK_UN_ENOUGH_EXCEPTION.getMessage());
+        }
+
+        return R.ok();
+    }
+
+    /**
+     * 查询所有sku是否有库存 stock - lockStock
+     */
+    @PostMapping("/skus/hasStock")
+    public Map<Long, Boolean> hasStocks(@RequestBody List<Long> skuIds) {
+        return wareSkuService.listStockMap(skuIds);
     }
 
     /**

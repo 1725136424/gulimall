@@ -13,6 +13,8 @@ import site.wanjiahao.gulimall.cart.service.CartService;
 import site.wanjiahao.gulimall.cart.vo.Cart;
 import site.wanjiahao.gulimall.cart.vo.CartItem;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Controller
@@ -66,5 +68,20 @@ public class CartController {
     public String delete(@RequestParam("skuId") Long skuId) {
         cartService.delete(skuId);
         return "redirect:"+ PageConstant.CART_URL + "/cartList";
+    }
+
+    // 获取当前选择购物车中的所有购物项
+    @GetMapping("/findCheckCartItem")
+    @ResponseBody
+    public List<CartItem> findCheckCartItem() {
+       return cartService.findCheckCartItem();
+    }
+
+    // 获取当前购物车总的金额
+    @GetMapping("/getTotalPrice")
+    @ResponseBody
+    public R getTotalPrice() {
+        BigDecimal totalPrice = cartService.getTotalPrice();
+        return new R().put("price", totalPrice);
     }
 }

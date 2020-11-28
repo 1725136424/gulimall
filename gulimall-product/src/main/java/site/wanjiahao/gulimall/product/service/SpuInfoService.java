@@ -6,6 +6,8 @@ import site.wanjiahao.gulimall.product.entity.SpuInfoEntity;
 import site.wanjiahao.gulimall.product.vo.SpuInfoUpdateStatusVo;
 import site.wanjiahao.gulimall.product.vo.SpuInfoVo;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,5 +26,9 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
     void updatePublishStatus(SpuInfoUpdateStatusVo spuInfoUpdateStatusVo);
 
     SpuInfoEntity listById(Long spuId);
+
+    Map<Long, BigDecimal> getWeightBySpuIds(List<Long> spuIds);
+
+    Map<Long, SpuInfoEntity> listSpuInfoMapByIds(List<Long> spuIds);
 }
 

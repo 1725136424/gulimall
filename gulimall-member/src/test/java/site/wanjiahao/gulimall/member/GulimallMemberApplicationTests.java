@@ -19,3 +19,13 @@ class GulimallMemberApplicationTests {
     }
 
 }
+
+class Test1 {
+
+    @Test
+    void test1() {
+        String phone = "13684819080";
+        String substring = phone.substring(phone.length() - 1);
+        System.out.println(substring);
+    }
+}

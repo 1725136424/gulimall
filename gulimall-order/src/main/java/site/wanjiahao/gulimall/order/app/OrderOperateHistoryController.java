@@ -1,4 +1,4 @@
-package site.wanjiahao.gulimall.order.controller;
+package site.wanjiahao.gulimall.order.app;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -11,33 +11,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import site.wanjiahao.gulimall.order.entity.OrderReturnApplyEntity;
-import site.wanjiahao.gulimall.order.service.OrderReturnApplyService;
+import site.wanjiahao.gulimall.order.entity.OrderOperateHistoryEntity;
+import site.wanjiahao.gulimall.order.service.OrderOperateHistoryService;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.common.utils.R;
 
 
 
 /**
- * 订单退货申请
+ * 订单操作历史记录
  *
  * @author haodada
  * @email 1725136424@qq.com
  * @date 2020-10-01 16:00:12
  */
 @RestController
-@RequestMapping("order/orderreturnapply")
-public class OrderReturnApplyController {
+@RequestMapping("order/orderoperatehistory")
+public class OrderOperateHistoryController {
     @Autowired
-    private OrderReturnApplyService orderReturnApplyService;
+    private OrderOperateHistoryService orderOperateHistoryService;
 
     /**
      * 列表
      */
     @RequestMapping("/list")
-    // @RequiresPermissions("order:orderreturnapply:list")
+    // @RequiresPermissions("order:orderoperatehistory:list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = orderReturnApplyService.queryPage(params);
+        PageUtils page = orderOperateHistoryService.queryPage(params);
 
         return R.ok().put("page", page);
     }
@@ -47,20 +47,20 @@ public class OrderReturnApplyController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    // @RequiresPermissions("order:orderreturnapply:info")
+    // @RequiresPermissions("order:orderoperatehistory:info")
     public R info(@PathVariable("id") Long id){
-		OrderReturnApplyEntity orderReturnApply = orderReturnApplyService.getById(id);
+		OrderOperateHistoryEntity orderOperateHistory = orderOperateHistoryService.getById(id);
 
-        return R.ok().put("orderReturnApply", orderReturnApply);
+        return R.ok().put("orderOperateHistory", orderOperateHistory);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    // @RequiresPermissions("order:orderreturnapply:save")
-    public R save(@RequestBody OrderReturnApplyEntity orderReturnApply){
-		orderReturnApplyService.save(orderReturnApply);
+    // @RequiresPermissions("order:orderoperatehistory:save")
+    public R save(@RequestBody OrderOperateHistoryEntity orderOperateHistory){
+		orderOperateHistoryService.save(orderOperateHistory);
 
         return R.ok();
     }
@@ -69,9 +69,9 @@ public class OrderReturnApplyController {
      * 修改
      */
     @RequestMapping("/update")
-    // @RequiresPermissions("order:orderreturnapply:update")
-    public R update(@RequestBody OrderReturnApplyEntity orderReturnApply){
-		orderReturnApplyService.updateById(orderReturnApply);
+    // @RequiresPermissions("order:orderoperatehistory:update")
+    public R update(@RequestBody OrderOperateHistoryEntity orderOperateHistory){
+		orderOperateHistoryService.updateById(orderOperateHistory);
 
         return R.ok();
     }
@@ -80,9 +80,9 @@ public class OrderReturnApplyController {
      * 删除
      */
     @RequestMapping("/delete")
-    // @RequiresPermissions("order:orderreturnapply:delete")
+    // @RequiresPermissions("order:orderoperatehistory:delete")
     public R delete(@RequestBody Long[] ids){
-		orderReturnApplyService.removeByIds(Arrays.asList(ids));
+		orderOperateHistoryService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }

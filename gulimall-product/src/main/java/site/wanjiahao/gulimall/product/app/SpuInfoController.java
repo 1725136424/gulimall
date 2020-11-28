@@ -11,7 +11,9 @@ import site.wanjiahao.gulimall.product.service.SpuInfoService;
 import site.wanjiahao.gulimall.product.vo.SpuInfoUpdateStatusVo;
 import site.wanjiahao.gulimall.product.vo.SpuInfoVo;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -51,6 +53,22 @@ public class SpuInfoController {
 		SpuInfoEntity spuInfo = spuInfoService.getById(id);
 
         return R.ok().put("spuInfo", spuInfo);
+    }
+
+    /**
+     * 查询某spu下的重量信息
+     */
+    @PostMapping("/spus/weight")
+    public Map<Long, BigDecimal> getWeightBySpuIds(@RequestBody List<Long> spuIds) {
+        return spuInfoService.getWeightBySpuIds(spuIds);
+    }
+
+    /**
+     * 查询spu信息，封装为map key:id value:entity
+     */
+    @PostMapping("/spus")
+    public Map<Long, SpuInfoEntity> listSpuInfoMapByIds(@RequestBody List<Long> spuIds) {
+        return spuInfoService.listSpuInfoMapByIds(spuIds);
     }
 
     /**

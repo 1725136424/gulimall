@@ -67,6 +67,11 @@ public class MemberEntityVo implements Serializable {
      * 积分
      */
     private Integer integration;
+
+    public Integer getIntegration() {
+        return integration == null? 0: integration;
+    }
+
     /**
      * 成长值
      */

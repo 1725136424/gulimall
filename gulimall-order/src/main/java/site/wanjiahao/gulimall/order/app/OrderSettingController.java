@@ -1,4 +1,4 @@
-package site.wanjiahao.gulimall.order.controller;
+package site.wanjiahao.gulimall.order.app;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -11,33 +11,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import site.wanjiahao.gulimall.order.entity.OrderReturnReasonEntity;
-import site.wanjiahao.gulimall.order.service.OrderReturnReasonService;
+import site.wanjiahao.gulimall.order.entity.OrderSettingEntity;
+import site.wanjiahao.gulimall.order.service.OrderSettingService;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.common.utils.R;
 
 
 
 /**
- * 退货原因
+ * 订单配置信息
  *
  * @author haodada
  * @email 1725136424@qq.com
  * @date 2020-10-01 16:00:12
  */
 @RestController
-@RequestMapping("order/orderreturnreason")
-public class OrderReturnReasonController {
+@RequestMapping("order/ordersetting")
+public class OrderSettingController {
     @Autowired
-    private OrderReturnReasonService orderReturnReasonService;
+    private OrderSettingService orderSettingService;
 
     /**
      * 列表
      */
     @RequestMapping("/list")
-    // @RequiresPermissions("order:orderreturnreason:list")
+    // @RequiresPermissions("order:ordersetting:list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = orderReturnReasonService.queryPage(params);
+        PageUtils page = orderSettingService.queryPage(params);
 
         return R.ok().put("page", page);
     }
@@ -47,20 +47,20 @@ public class OrderReturnReasonController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    // @RequiresPermissions("order:orderreturnreason:info")
+    // @RequiresPermissions("order:ordersetting:info")
     public R info(@PathVariable("id") Long id){
-		OrderReturnReasonEntity orderReturnReason = orderReturnReasonService.getById(id);
+		OrderSettingEntity orderSetting = orderSettingService.getById(id);
 
-        return R.ok().put("orderReturnReason", orderReturnReason);
+        return R.ok().put("orderSetting", orderSetting);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    // @RequiresPermissions("order:orderreturnreason:save")
-    public R save(@RequestBody OrderReturnReasonEntity orderReturnReason){
-		orderReturnReasonService.save(orderReturnReason);
+    // @RequiresPermissions("order:ordersetting:save")
+    public R save(@RequestBody OrderSettingEntity orderSetting){
+		orderSettingService.save(orderSetting);
 
         return R.ok();
     }
@@ -69,9 +69,9 @@ public class OrderReturnReasonController {
      * 修改
      */
     @RequestMapping("/update")
-    // @RequiresPermissions("order:orderreturnreason:update")
-    public R update(@RequestBody OrderReturnReasonEntity orderReturnReason){
-		orderReturnReasonService.updateById(orderReturnReason);
+    // @RequiresPermissions("order:ordersetting:update")
+    public R update(@RequestBody OrderSettingEntity orderSetting){
+		orderSettingService.updateById(orderSetting);
 
         return R.ok();
     }
@@ -80,9 +80,9 @@ public class OrderReturnReasonController {
      * 删除
      */
     @RequestMapping("/delete")
-    // @RequiresPermissions("order:orderreturnreason:delete")
+    // @RequiresPermissions("order:ordersetting:delete")
     public R delete(@RequestBody Long[] ids){
-		orderReturnReasonService.removeByIds(Arrays.asList(ids));
+		orderSettingService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }

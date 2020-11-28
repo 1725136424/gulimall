@@ -1,4 +1,4 @@
-package site.wanjiahao.gulimall.order.controller;
+package site.wanjiahao.gulimall.order.app;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -11,33 +11,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import site.wanjiahao.gulimall.order.entity.PaymentInfoEntity;
-import site.wanjiahao.gulimall.order.service.PaymentInfoService;
+import site.wanjiahao.gulimall.order.entity.OrderReturnReasonEntity;
+import site.wanjiahao.gulimall.order.service.OrderReturnReasonService;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.common.utils.R;
 
 
 
 /**
- * 支付信息表
+ * 退货原因
  *
  * @author haodada
  * @email 1725136424@qq.com
  * @date 2020-10-01 16:00:12
  */
 @RestController
-@RequestMapping("order/paymentinfo")
-public class PaymentInfoController {
+@RequestMapping("order/orderreturnreason")
+public class OrderReturnReasonController {
     @Autowired
-    private PaymentInfoService paymentInfoService;
+    private OrderReturnReasonService orderReturnReasonService;
 
     /**
      * 列表
      */
     @RequestMapping("/list")
-    // @RequiresPermissions("order:paymentinfo:list")
+    // @RequiresPermissions("order:orderreturnreason:list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = paymentInfoService.queryPage(params);
+        PageUtils page = orderReturnReasonService.queryPage(params);
 
         return R.ok().put("page", page);
     }
@@ -47,20 +47,20 @@ public class PaymentInfoController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    // @RequiresPermissions("order:paymentinfo:info")
+    // @RequiresPermissions("order:orderreturnreason:info")
     public R info(@PathVariable("id") Long id){
-		PaymentInfoEntity paymentInfo = paymentInfoService.getById(id);
+		OrderReturnReasonEntity orderReturnReason = orderReturnReasonService.getById(id);
 
-        return R.ok().put("paymentInfo", paymentInfo);
+        return R.ok().put("orderReturnReason", orderReturnReason);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    // @RequiresPermissions("order:paymentinfo:save")
-    public R save(@RequestBody PaymentInfoEntity paymentInfo){
-		paymentInfoService.save(paymentInfo);
+    // @RequiresPermissions("order:orderreturnreason:save")
+    public R save(@RequestBody OrderReturnReasonEntity orderReturnReason){
+		orderReturnReasonService.save(orderReturnReason);
 
         return R.ok();
     }
@@ -69,9 +69,9 @@ public class PaymentInfoController {
      * 修改
      */
     @RequestMapping("/update")
-    // @RequiresPermissions("order:paymentinfo:update")
-    public R update(@RequestBody PaymentInfoEntity paymentInfo){
-		paymentInfoService.updateById(paymentInfo);
+    // @RequiresPermissions("order:orderreturnreason:update")
+    public R update(@RequestBody OrderReturnReasonEntity orderReturnReason){
+		orderReturnReasonService.updateById(orderReturnReason);
 
         return R.ok();
     }
@@ -80,9 +80,9 @@ public class PaymentInfoController {
      * 删除
      */
     @RequestMapping("/delete")
-    // @RequiresPermissions("order:paymentinfo:delete")
+    // @RequiresPermissions("order:orderreturnreason:delete")
     public R delete(@RequestBody Long[] ids){
-		paymentInfoService.removeByIds(Arrays.asList(ids));
+		orderReturnReasonService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }

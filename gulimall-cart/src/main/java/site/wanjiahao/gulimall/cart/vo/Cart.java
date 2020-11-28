@@ -20,7 +20,9 @@ public class Cart {
         if (cartItems != null && cartItems.size() > 0) {
             Integer count = 0;
             for (CartItem cartItem : cartItems) {
-                count += cartItem.getNum();
+                if (cartItem.getChecked()) {
+                    count += cartItem.getNum();
+                }
             }
             return count;
         }
@@ -31,7 +33,9 @@ public class Cart {
         if (cartItems != null && cartItems.size() > 0) {
             BigDecimal totalPrice = BigDecimal.ZERO;
             for (CartItem cartItem : cartItems) {
-                totalPrice = totalPrice.add(cartItem.getTotalPrice());
+                if (cartItem.getChecked()) {
+                    totalPrice = totalPrice.add(cartItem.getTotalPrice());
+                }
             }
             return totalPrice;
         }
@@ -39,6 +43,12 @@ public class Cart {
     }
 
     public Integer getTotalType() {
-        return cartItems == null? 0: cartItems.size();
+        int totalType = 0;
+        for (CartItem cartItem : cartItems) {
+            if (cartItem.getChecked()) {
+                totalType += 1;
+            }
+        }
+        return totalType;
     }
 }

@@ -1,4 +1,4 @@
-package site.wanjiahao.gulimall.order.controller;
+package site.wanjiahao.gulimall.order.app;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -11,33 +11,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import site.wanjiahao.gulimall.order.entity.OrderSettingEntity;
-import site.wanjiahao.gulimall.order.service.OrderSettingService;
+import site.wanjiahao.gulimall.order.entity.OrderEntity;
+import site.wanjiahao.gulimall.order.service.OrderService;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.common.utils.R;
 
 
 
 /**
- * 订单配置信息
+ * 订单
  *
  * @author haodada
  * @email 1725136424@qq.com
  * @date 2020-10-01 16:00:12
  */
 @RestController
-@RequestMapping("order/ordersetting")
-public class OrderSettingController {
+@RequestMapping("order/order")
+public class OrderController {
     @Autowired
-    private OrderSettingService orderSettingService;
+    private OrderService orderService;
 
     /**
      * 列表
      */
     @RequestMapping("/list")
-    // @RequiresPermissions("order:ordersetting:list")
+    // @RequiresPermissions("order:order:list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = orderSettingService.queryPage(params);
+        PageUtils page = orderService.queryPage(params);
 
         return R.ok().put("page", page);
     }
@@ -47,20 +47,20 @@ public class OrderSettingController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    // @RequiresPermissions("order:ordersetting:info")
+    // @RequiresPermissions("order:order:info")
     public R info(@PathVariable("id") Long id){
-		OrderSettingEntity orderSetting = orderSettingService.getById(id);
+		OrderEntity order = orderService.getById(id);
 
-        return R.ok().put("orderSetting", orderSetting);
+        return R.ok().put("order", order);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    // @RequiresPermissions("order:ordersetting:save")
-    public R save(@RequestBody OrderSettingEntity orderSetting){
-		orderSettingService.save(orderSetting);
+    // @RequiresPermissions("order:order:save")
+    public R save(@RequestBody OrderEntity order){
+		orderService.save(order);
 
         return R.ok();
     }
@@ -69,9 +69,9 @@ public class OrderSettingController {
      * 修改
      */
     @RequestMapping("/update")
-    // @RequiresPermissions("order:ordersetting:update")
-    public R update(@RequestBody OrderSettingEntity orderSetting){
-		orderSettingService.updateById(orderSetting);
+    // @RequiresPermissions("order:order:update")
+    public R update(@RequestBody OrderEntity order){
+		orderService.updateById(order);
 
         return R.ok();
     }
@@ -80,9 +80,9 @@ public class OrderSettingController {
      * 删除
      */
     @RequestMapping("/delete")
-    // @RequiresPermissions("order:ordersetting:delete")
+    // @RequiresPermissions("order:order:delete")
     public R delete(@RequestBody Long[] ids){
-		orderSettingService.removeByIds(Arrays.asList(ids));
+		orderService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }
