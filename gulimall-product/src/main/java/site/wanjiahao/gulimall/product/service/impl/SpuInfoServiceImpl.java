@@ -23,6 +23,7 @@ import site.wanjiahao.gulimall.product.vo.*;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -381,7 +382,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     @Override
     public Map<Long, SpuInfoEntity> listSpuInfoMapByIds(List<Long> spuIds) {
         if (spuIds != null && spuIds.size() > 0) {
-            return listByIds(spuIds).stream().collect(Collectors.toMap(SpuInfoEntity::getId, (item) -> item));
+            return listByIds(spuIds).stream().collect(Collectors.toMap(SpuInfoEntity::getId, Function.identity()));
         } else {
             return null;
         }

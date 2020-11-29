@@ -24,3 +24,11 @@ mybatis-plus:
 logging:
   level:
     site.wanjiahao.gulimall.ware: debug # 输出sql语句
+seata:
+  application-id: ${spring.application.name}
+  tx-service-group: default
+  service:
+    vgroupMapping:
+      default: default
+    grouplist:
+      default: 127.0.0.1:8091

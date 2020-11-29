@@ -38,3 +38,11 @@ gulimall:
     maximum-pool-size: 200
     keep-alive-time: 10
     capacity: 100000
+seata:
+  application-id: ${spring.application.name}
+  tx-service-group: default
+  service:
+    vgroupMapping:
+      default: default
+    grouplist:
+      default: 127.0.0.1:8091

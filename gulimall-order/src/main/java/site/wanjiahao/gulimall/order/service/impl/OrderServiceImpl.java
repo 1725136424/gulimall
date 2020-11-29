@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -158,6 +159,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         return settleAccountsVo;
     }
 
+    @GlobalTransactional // 全局事务注解
     @Transactional
     @Override
     public OrderResponseVo buildOrderResponseVo(OrderSubmitVo orderSubmitVo) throws ExecutionException, InterruptedException {
@@ -187,6 +189,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                     R r = wareFeignService.lockStock(lockMap);
                     if (r.getCode() == 0) {
                         orderResponseVo.setOrderEntity(orderEntity);
+                        // TODO 远程保存积分信息
                         orderResponseVo.setCode(0);
                     } else {
                         throw new StockNotEnoughException("库存不足异常");

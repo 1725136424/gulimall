@@ -74,9 +74,9 @@ public class PageController {
         OrderResponseVo orderResponseVo = new OrderResponseVo();
         try {
             orderResponseVo = orderService.buildOrderResponseVo(orderSubmitVo);
-        } catch (StockNotEnoughException stockNotEnoughException) {
+        } catch (Exception e) {
             orderResponseVo.setCode(4);
-            stockNotEnoughException.printStackTrace();
+            e.printStackTrace();
         }
         if (orderResponseVo.getCode() == 0) {
             model.addAttribute("order", orderResponseVo.getOrderEntity());
