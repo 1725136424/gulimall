@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -15,16 +17,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
-import site.wanjiahao.common.constant.ConfirmOrderStatusEnum;
-import site.wanjiahao.common.constant.DeleteOrderStatusEnum;
-import site.wanjiahao.common.constant.OrderConstant;
-import site.wanjiahao.common.constant.OrderStatusEnum;
+import site.wanjiahao.common.constant.*;
 import site.wanjiahao.common.exception.StockNotEnoughException;
+import site.wanjiahao.common.to.LockStockTo;
+import site.wanjiahao.common.to.OrderEntityTo;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.common.utils.Query;
 import site.wanjiahao.common.utils.R;
 import site.wanjiahao.common.vo.MemberEntityVo;
 import site.wanjiahao.gulimall.order.dao.OrderDao;
+import site.wanjiahao.gulimall.order.entity.MQMessageEntity;
 import site.wanjiahao.gulimall.order.entity.OrderEntity;
 import site.wanjiahao.gulimall.order.entity.OrderItemEntity;
 import site.wanjiahao.gulimall.order.feign.CartFeignService;
@@ -34,6 +36,7 @@ import site.wanjiahao.gulimall.order.feign.WareFeignService;
 import site.wanjiahao.gulimall.order.interceptor.LoginInterceptor;
 import site.wanjiahao.gulimall.order.service.OrderItemService;
 import site.wanjiahao.gulimall.order.service.OrderService;
+import site.wanjiahao.gulimall.order.service.PaymentInfoService;
 import site.wanjiahao.gulimall.order.to.SpuInfoEntityTo;
 import site.wanjiahao.gulimall.order.vo.*;
 
@@ -70,6 +73,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Autowired
     private OrderItemService orderItemService;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private PaymentInfoService paymentInfoService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -137,7 +146,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                                 param.forEach((item) -> {
                                     Long skuId = item.getSkuId();
                                     Boolean hasStock = stockMap.get(skuId);
-                                    item.setHasStock(hasStock == null? false: hasStock);
+                                    item.setHasStock(hasStock == null ? false : hasStock);
                                 });
                             }
                         } catch (Exception e) {
@@ -159,7 +168,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         return settleAccountsVo;
     }
 
-    @GlobalTransactional // 全局事务注解
+    //    @GlobalTransactional // 全局事务注解
     @Transactional
     @Override
     public OrderResponseVo buildOrderResponseVo(OrderSubmitVo orderSubmitVo) throws ExecutionException, InterruptedException {
@@ -186,9 +195,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                     saveOrderAndOrderItem(orderEntity, orderItemEntities);
                     // 锁定库存
                     Map<Long, Integer> lockMap = orderItemEntities.stream().collect(Collectors.toMap(OrderItemEntity::getSkuId, OrderItemEntity::getSkuQuantity));
-                    R r = wareFeignService.lockStock(lockMap);
+                    LockStockTo lockStockTo = new LockStockTo();
+                    lockStockTo.setLockMap(lockMap);
+                    lockStockTo.setOrderSn(orderEntity.getOrderSn());
+                    R r = wareFeignService.lockStock(lockStockTo);
                     if (r.getCode() == 0) {
                         orderResponseVo.setOrderEntity(orderEntity);
+                        // 延迟关闭订单功能
+                        rabbitTemplate.convertAndSend(OrderRabbitConstant.ORDER_EXCHANGE,
+                                OrderRabbitConstant.ORDER_DELAY_QUEUE,
+                                orderEntity);
                         // TODO 远程保存积分信息
                         orderResponseVo.setCode(0);
                     } else {
@@ -207,6 +223,110 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         }
 
         return orderResponseVo;
+    }
+
+    @Override
+    public OrderEntity getOrderByOrderSn(String orderSn) {
+        return baseMapper.selectOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
+    }
+
+    @Override
+    public void closeOrder(OrderEntity orderEntity) {
+        // 获取当前订单状态
+        if (orderEntity != null) {
+            Integer status = orderEntity.getStatus();
+            // 如果是代付款状态，需要关闭订单
+            if (status.equals(OrderStatusEnum.CREATE_NEW.getCode())) {
+                // 关闭订单
+                OrderEntity order = new OrderEntity();
+                order.setStatus(OrderStatusEnum.CANCLED.getCode());
+                order.setId(orderEntity.getId());
+                baseMapper.updateById(order);
+                // 立即解锁库存  发送给解锁库存的消息队列，直接解锁库存
+                OrderEntityTo orderEntityTo = new OrderEntityTo();
+                BeanUtils.copyProperties(orderEntity, orderEntityTo);
+                String messageId = UUID.randomUUID().toString().replace("-", "");
+                try {
+                    // TODO 保证消息的可靠性，才是保证分布式事务的最关键因素，做好日志记录，保证所有的消息的可以发出
+                    MQMessageEntity mqMessageEntity = new MQMessageEntity();
+                    mqMessageEntity.setMessageId(messageId);
+                    mqMessageEntity.setContent(JSON.toJSONString(orderEntityTo));
+                    mqMessageEntity.setToChange(WareRabbitConstant.STOCK_EXCHANGE);
+                    mqMessageEntity.setRoutingKey("stock.release.other");
+                    mqMessageEntity.setClassType(OrderEntityTo.class.getTypeName());
+                    mqMessageEntity.setMessageStatus(MQConstant.MQStatus.NEW.getCode());
+                    mqMessageEntity.setCreateTime(new Date());
+                    mqMessageEntity.setUpdateTime(new Date());
+                    wareFeignService.saveMessage(mqMessageEntity);
+                    // 设置消息唯一id
+                    CorrelationData correlationData = new CorrelationData();
+                    correlationData.setId(messageId);
+                    rabbitTemplate.convertAndSend(WareRabbitConstant.STOCK_EXCHANGE,
+                            "stock.release.other", orderEntityTo, correlationData);
+                    mqMessageEntity.setMessageStatus(MQConstant.MQStatus.SENT.getCode());
+                    wareFeignService.updateById(mqMessageEntity);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    // 查出当前异常的信息，修改状态
+                    R r = wareFeignService.selectById(messageId);
+                    MQMessageEntity mqMessageEntity = JSON.parseObject(JSON.toJSONString(r.get("mqMessage")), MQMessageEntity.class);
+                    if (mqMessageEntity != null &&
+                            (mqMessageEntity.getMessageStatus() == MQConstant.MQStatus.NEW.getCode() ||
+                            mqMessageEntity.getMessageStatus() == MQConstant.MQStatus.SENT.getCode())) {
+                        mqMessageEntity.setMessageStatus(MQConstant.MQStatus.ERROR_DELIVERED.getCode());
+                        wareFeignService.updateById(mqMessageEntity);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public AliPayVo pay(String orderSn) {
+        AliPayVo aliPayVo = new AliPayVo();
+        // 查询当前订单
+        OrderEntity orderEntity = baseMapper.selectOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
+        aliPayVo.setOutTradeNo(orderSn);
+        aliPayVo.setTotalMount(orderEntity.getPayAmount());
+        // TODO 设置回调地址
+        aliPayVo.setReturnUrl("http://order.gulimall.com/orderList.html");
+        // 查询当前订单对应的订单项
+        List<OrderItemEntity> orderItemEntities = orderItemService.listByOrderSn(orderSn);
+        if (orderItemEntities != null && orderItemEntities.size() > 0) {
+            OrderItemEntity orderItemEntity = orderItemEntities.get(0);
+            aliPayVo.setSubject(orderItemEntity.getSkuName());
+        }
+        return aliPayVo;
+    }
+
+    @Override
+    public List<OrderListHtmlVo> listOrderWithOrderItem() {
+        MemberEntityVo memberEntityVo = LoginInterceptor.threadLocal.get();
+        Long id = memberEntityVo.getId();
+        // 获取当前用户所有的的购物列表
+        List<OrderEntity> orderEntities = baseMapper.selectList(new QueryWrapper<OrderEntity>().eq("member_id", id));
+        // 最多显示5个
+        return orderEntities.stream().limit(5).map(item -> {
+            OrderListHtmlVo orderListHtmlVo = new OrderListHtmlVo();
+            BeanUtils.copyProperties(item, orderListHtmlVo);
+            String orderSn = item.getOrderSn();
+            // 查询当前订单对应的订单项信息
+            List<OrderItemEntity> orderItemEntities = orderItemService.listByOrderSn(orderSn);
+            orderListHtmlVo.setOrderItemEntities(orderItemEntities);
+            return orderListHtmlVo;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void handleOrderResult(AlipayAsyncNotifyVo alipayAsyncNotifyVo) {
+        // 保存订单付款信息
+        paymentInfoService.savePaymentByAlipayNotify(alipayAsyncNotifyVo);
+        // 更新订单状态
+        String out_trade_no = alipayAsyncNotifyVo.getOut_trade_no();
+        OrderEntity orderEntity = baseMapper.selectOne(new QueryWrapper<OrderEntity>().eq("order_sn", out_trade_no));
+        orderEntity.setStatus(OrderStatusEnum.PAYED.getCode());
+        baseMapper.updateById(orderEntity);
     }
 
     private void saveOrderAndOrderItem(OrderEntity orderEntity, List<OrderItemEntity> orderItemEntities) {
@@ -242,6 +362,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 orderItemEntity.setSpuName(spuInfoMap.get(spuId).getSpuName());
                 // spu_pic --> 直接设置sku图片，
                 orderItemEntity.setSpuPic(item.getSkuImg());
+                orderItemEntity.setSkuPic(item.getSkuImg());
                 // spu_brand
                 orderItemEntity.setSpuBrand(spuInfoMap.get(spuId).getBrandId() + "");
                 // category_id
@@ -251,9 +372,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 // sku_name
                 orderItemEntity.setSkuName(item.getSkuTitle());
                 // sku_pic
-                orderItemEntity.setSkuPic(item.getSkuImg());
-                // sku_price
-                orderItemEntity.setSkuPic(item.getPrice().toString());
+                orderItemEntity.setSkuPrice(item.getPrice());
                 // sku_quantity 数量
                 orderItemEntity.setSkuQuantity(item.getNum());
                 // sku_attr_values json

@@ -3,6 +3,7 @@ package site.wanjiahao.gulimall.order.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.gulimall.order.entity.PaymentInfoEntity;
+import site.wanjiahao.gulimall.order.vo.AlipayAsyncNotifyVo;
 
 import java.util.Map;
 
@@ -16,5 +17,7 @@ import java.util.Map;
 public interface PaymentInfoService extends IService<PaymentInfoEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    void savePaymentByAlipayNotify(AlipayAsyncNotifyVo alipayAsyncNotifyVo);
 }
 

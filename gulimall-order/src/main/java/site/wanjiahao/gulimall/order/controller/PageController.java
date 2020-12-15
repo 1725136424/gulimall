@@ -1,22 +1,23 @@
 package site.wanjiahao.gulimall.order.controller;
 
+import com.alipay.easysdk.factory.Factory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import site.wanjiahao.common.constant.PageConstant;
-import site.wanjiahao.common.exception.StockNotEnoughException;
 import site.wanjiahao.common.utils.R;
 import site.wanjiahao.gulimall.order.feign.MemberFeignService;
 import site.wanjiahao.gulimall.order.service.OrderService;
-import site.wanjiahao.gulimall.order.vo.OrderResponseVo;
-import site.wanjiahao.gulimall.order.vo.OrderSubmitVo;
-import site.wanjiahao.gulimall.order.vo.SettleAccountsVo;
+import site.wanjiahao.gulimall.order.utils.AliPayTemplate;
+import site.wanjiahao.gulimall.order.vo.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @Controller
@@ -34,9 +35,15 @@ public class PageController {
     }
 
     @GetMapping(value = {"/orderList.html", "/orderList"})
-    public String orderList() {
+    public String orderList(Model model) {
+        // 获取当前用户所有的订单以及订单项信息
+        List<OrderListHtmlVo> orderListHtmlVos = orderService.listOrderWithOrderItem();
+        model.addAttribute("orders", orderListHtmlVos);
         return "orderList";
     }
+
+    @Autowired
+    private AliPayTemplate aliPayTemplate;
 
     /**
      * 构造结算页面需要的所有数据
@@ -100,4 +107,40 @@ public class PageController {
         }
     }
 
+    /**
+     * 支付宝支付
+     */
+    @ResponseBody
+    @GetMapping(value = "/alipay/{orderSn}", produces = "text/html")
+    public String alipay(@PathVariable("orderSn") String orderSn) throws Exception {
+        AliPayVo pay = orderService.pay(orderSn);
+        String price = pay.getTotalMount().setScale(2, RoundingMode.CEILING).toString();
+        return aliPayTemplate.pagePay(pay.getSubject(), pay.getOutTradeNo(), price, pay.getReturnUrl());
+    }
+
+    /**
+     * 支付宝异步回调地址
+     */
+    @ResponseBody
+    @PostMapping("/alipayAsyncNotify/handleOrderResult")
+    public String handleOrderResult(HttpServletRequest request, AlipayAsyncNotifyVo alipayAsyncNotifyVo) throws Exception {
+        // 验签
+        HashMap<String, String> map = new HashMap<>();
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        for (String s : parameterMap.keySet()) {
+            map.put(s, parameterMap.get(s)[0]);
+        }
+        Boolean isVerify = Factory.Payment.Common().verifyNotify(map);
+        if (isVerify) {
+            try {
+                orderService.handleOrderResult(alipayAsyncNotifyVo);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "error";
+            }
+            return "success";
+        } else {
+            return "error";
+        }
+    }
 }

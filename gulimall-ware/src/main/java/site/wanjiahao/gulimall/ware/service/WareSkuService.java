@@ -1,6 +1,9 @@
 package site.wanjiahao.gulimall.ware.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import site.wanjiahao.common.to.LockStockTo;
+import site.wanjiahao.common.to.OrderEntityTo;
+import site.wanjiahao.common.to.WareOrderTaskDetailTo;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.gulimall.ware.entity.WareSkuEntity;
 
@@ -24,6 +27,10 @@ public interface WareSkuService extends IService<WareSkuEntity> {
 
     Map<Long, Boolean> listStockMap(List<Long> skuIds);
 
-    void lockStock(Map<Long, Integer> lockMap);
+    void lockStock(LockStockTo lockStockTo);
+
+    void unlock(WareOrderTaskDetailTo wareOrderTaskDetailTo);
+
+    void unlock(OrderEntityTo orderEntityTo);
 }
 

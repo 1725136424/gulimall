@@ -1,20 +1,16 @@
 package site.wanjiahao.gulimall.order.app;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import site.wanjiahao.common.utils.PageUtils;
+import site.wanjiahao.common.utils.R;
+import site.wanjiahao.gulimall.order.entity.OrderEntity;
+import site.wanjiahao.gulimall.order.service.OrderService;
+
 import java.util.Arrays;
 import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import site.wanjiahao.gulimall.order.entity.OrderEntity;
-import site.wanjiahao.gulimall.order.service.OrderService;
-import site.wanjiahao.common.utils.PageUtils;
-import site.wanjiahao.common.utils.R;
 
 
 
@@ -28,6 +24,7 @@ import site.wanjiahao.common.utils.R;
 @RestController
 @RequestMapping("order/order")
 public class OrderController {
+
     @Autowired
     private OrderService orderService;
 
@@ -52,6 +49,14 @@ public class OrderController {
 		OrderEntity order = orderService.getById(id);
 
         return R.ok().put("order", order);
+    }
+
+    /**
+     * 根据订单号查询当前订单
+     */
+    @GetMapping("/info/orderSn/{orderSn}")
+    public OrderEntity infoOrder(@PathVariable("orderSn") String orderSn) {
+        return orderService.getOrderByOrderSn(orderSn);
     }
 
     /**

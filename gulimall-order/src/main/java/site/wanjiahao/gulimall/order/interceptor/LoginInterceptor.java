@@ -1,5 +1,6 @@
 package site.wanjiahao.gulimall.order.interceptor;
 
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerInterceptor;
 import site.wanjiahao.common.constant.AuthServerConstant;
 import site.wanjiahao.common.vo.MemberEntityVo;
@@ -14,6 +15,16 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String[] unAuthUrl = new String[]{
+                "/order/order/info/orderSn/**",
+                "/alipayAsyncNotify/**" // 异步回调地址
+        };
+        for (String s : unAuthUrl) {
+            boolean match = new AntPathMatcher().match(s, request.getRequestURI());
+            if (match) {
+                return true;
+            }
+        }
         HttpSession session = request.getSession();
         if (session != null) {
             MemberEntityVo user = (MemberEntityVo) session.getAttribute(AuthServerConstant.SESSION_USER);

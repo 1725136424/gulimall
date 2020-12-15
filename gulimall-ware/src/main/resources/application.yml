@@ -5,7 +5,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     #MySQL配置
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.56.10:3306/gulimall_wms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://192.168.56.10:3306/gulimall_wms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
     password: root
   cloud:
@@ -16,6 +16,16 @@ spring:
     name: gulimall-ware
   jackson:
     date-format: yyyy-MM-dd
+  rabbitmq:
+    host: 192.168.56.10
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual
+    publisher-confirm-type: simple
+    publisher-returns: true
+    template:
+      mandatory: true
 mybatis-plus:
   mapper-locations: classpath*:mapper/**/*.xml
   global-config:

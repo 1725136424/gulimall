@@ -3,6 +3,7 @@ package site.wanjiahao.gulimall.ware.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import site.wanjiahao.common.code.BizCodeEnum;
+import site.wanjiahao.common.to.LockStockTo;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.common.utils.R;
 import site.wanjiahao.gulimall.ware.entity.WareSkuEntity;
@@ -53,9 +54,9 @@ public class WareSkuController {
      * 锁定库存
      */
     @PostMapping("/lockStock")
-    public R lockStock(@RequestBody Map<Long, Integer> lockMap) {
+    public R lockStock(@RequestBody LockStockTo lockStockTo) {
         try {
-            wareSkuService.lockStock(lockMap);
+            wareSkuService.lockStock(lockStockTo);
         } catch (Exception e) {
             e.printStackTrace();
             return R.error(BizCodeEnum.STOCK_UN_ENOUGH_EXCEPTION.getBizCode(),

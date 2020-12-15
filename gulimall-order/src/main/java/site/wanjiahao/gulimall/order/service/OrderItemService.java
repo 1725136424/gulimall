@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.gulimall.order.entity.OrderItemEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +17,7 @@ import java.util.Map;
 public interface OrderItemService extends IService<OrderItemEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    List<OrderItemEntity> listByOrderSn(String orderSn);
 }
 

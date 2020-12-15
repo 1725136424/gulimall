@@ -16,5 +16,9 @@ import java.util.Map;
 public interface WareOrderTaskService extends IService<WareOrderTaskEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    WareOrderTaskEntity listById(Long taskId);
+
+    WareOrderTaskEntity getByOrderSn(String orderSn);
 }
 

@@ -27,6 +27,8 @@ spring:
     cache: false
   redis:
     host: 192.168.56.10
+  mvc:
+    date-format: yyyy-MM-dd HH:mm:ss
 mybatis-plus:
   mapper-locations: classpath*:mapper/**/*.xml
   global-config:
@@ -46,3 +48,13 @@ seata:
       default: default
     grouplist:
       default: 127.0.0.1:8091
+alipay:
+  protocol: https
+  gatewayHost: openapi.alipaydev.com
+  signType: RSA2
+  appId: 2021000116668518
+  notifyUrl: http://mb8tpp.natappfree.cc/alipayAsyncNotify/handleOrderResult
+  merchantPrivatePath: foo/merchantPrivateKey.txt
+  merchantCertPath: foo/appCertPublicKey_2021000116668518.crt
+  alipayCertPath: foo/alipayCertPublicKey_RSA2.crt
+  alipayRootCertPath: foo/alipayRootCert.crt
