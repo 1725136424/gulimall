@@ -3,6 +3,18 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+    sentinel:
+      transport:
+        dashboard: 127.0.0.1:8080
+        port: 8719
+  zipkin:
+    base-url: http://192.168.56.10:9411
+    discovery-client-enabled: false
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1
   application:
     name: gulimall-cart
   thymeleaf:
@@ -19,3 +31,12 @@ gulimall:
     maximum-pool-size: 200
     keep-alive-time: 10
     capacity: 100000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+logging:
+  level:
+    org.springframework.cloud.sleuth: debug
+    org.springframework.cloud.openfeign: debug

@@ -1,20 +1,25 @@
 package site.wanjiahao.gulimall.product.web;
 
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import site.wanjiahao.common.utils.R;
 import site.wanjiahao.gulimall.product.entity.CategoryEntity;
 import site.wanjiahao.gulimall.product.entity.SkuImagesEntity;
 import site.wanjiahao.gulimall.product.entity.SkuInfoEntity;
 import site.wanjiahao.gulimall.product.entity.SpuInfoDescEntity;
+import site.wanjiahao.gulimall.product.feign.SeckillFeignService;
 import site.wanjiahao.gulimall.product.service.*;
 import site.wanjiahao.gulimall.product.vo.ItemResponseVo;
 import site.wanjiahao.gulimall.product.vo.SaleAttrVos;
+import site.wanjiahao.gulimall.product.vo.SeckillSkuRelationEntity;
 import site.wanjiahao.gulimall.product.vo.SimpleAttrGroupWithAttrVo;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -46,6 +51,9 @@ public class PageController {
 
     @Autowired
     private ThreadPoolExecutor threadPoolExecutor;
+
+    @Autowired
+    private SeckillFeignService seckillFeignService;
 
     @RequestMapping({"/", "/index.html"})
     public String home(Model model) {
@@ -97,10 +105,31 @@ public class PageController {
             itemResponseVo.setSimpleAttrGroupWithAttrVos(simpleAttrGroupWithAttrVos);
         }, threadPoolExecutor);
 
+        // 查询该商品的秒杀信息
+        CompletableFuture<Void> seckillFuture = CompletableFuture.runAsync(() -> {
+            R r = seckillFeignService.seckillInfo(skuId);
+            if (r.getCode() == 0) {
+                SeckillSkuRelationEntity entity = JSON.parseObject(JSON.toJSONString(r.get("entity")), SeckillSkuRelationEntity.class);
+                if (entity != null) {
+                    // 判断当前时间是否为秒杀区间
+                    long start = entity.getStartTime().getTime();
+                    long end = entity.getEndTime().getTime();
+                    long current = new Date().getTime();
+                    if (current < start || current > end) {
+                        // 置空随机码
+                        entity.setRandomCode(null);
+                    }
+                    itemResponseVo.setSeckillSkuRelationEntity(entity);
+                }
+            }
+        }, threadPoolExecutor);
+
+
         CompletableFuture<Void> allFuture = CompletableFuture.allOf(skuImageFuture,
                 skuInfoFuture,
                 skuInfoDescFuture,
-                attrFuture);
+                attrFuture,
+                seckillFuture);
 
         // 等待所有结果完成
         allFuture.get();

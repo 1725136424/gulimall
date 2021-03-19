@@ -10,6 +10,7 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import site.wanjiahao.common.constant.OrderRabbitConstant;
+import site.wanjiahao.common.constant.SeckillConstant;
 
 import java.util.HashMap;
 
@@ -71,4 +72,27 @@ public class MyRabbitMQConfig {
                 null);
     }
 
+    // 秒杀服务 队列消锋
+    @Bean
+    public Queue seckillQueue() {
+        /*
+        * String name, boolean durable, boolean exclusive, boolean autoDelete,
+			@Nullable Map<String, Object> arguments
+        * */
+        return new Queue(SeckillConstant.SECKILL_QUEUE, true, false, false);
+    }
+
+    // 绑定关系
+    @Bean
+    public Binding seckillBinding() {
+        /*
+        * String destination, DestinationType destinationType, String exchange, String routingKey,
+			@Nullable Map<String, Object> arguments
+        * */
+        return new Binding(SeckillConstant.SECKILL_QUEUE,
+                Binding.DestinationType.QUEUE,
+                OrderRabbitConstant.ORDER_EXCHANGE,
+                SeckillConstant.SECKILL_QUEUE,
+                null);
+    }
 }

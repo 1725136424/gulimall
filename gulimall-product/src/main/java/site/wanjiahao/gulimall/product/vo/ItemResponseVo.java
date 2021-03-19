@@ -19,4 +19,7 @@ public class ItemResponseVo {
     private SpuInfoDescEntity spuInfoDescEntity;
 
     private List<SimpleAttrGroupWithAttrVo> simpleAttrGroupWithAttrVos;
+
+    // 秒杀信息
+    private SeckillSkuRelationEntity seckillSkuRelationEntity;
 }

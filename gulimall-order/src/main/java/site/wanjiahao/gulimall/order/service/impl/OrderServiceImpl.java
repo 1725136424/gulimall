@@ -25,6 +25,7 @@ import site.wanjiahao.common.utils.PageUtils;
 import site.wanjiahao.common.utils.Query;
 import site.wanjiahao.common.utils.R;
 import site.wanjiahao.common.vo.MemberEntityVo;
+import site.wanjiahao.common.vo.SeckillSuccessVo;
 import site.wanjiahao.gulimall.order.dao.OrderDao;
 import site.wanjiahao.gulimall.order.entity.MQMessageEntity;
 import site.wanjiahao.gulimall.order.entity.OrderEntity;
@@ -272,7 +273,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                     MQMessageEntity mqMessageEntity = JSON.parseObject(JSON.toJSONString(r.get("mqMessage")), MQMessageEntity.class);
                     if (mqMessageEntity != null &&
                             (mqMessageEntity.getMessageStatus() == MQConstant.MQStatus.NEW.getCode() ||
-                            mqMessageEntity.getMessageStatus() == MQConstant.MQStatus.SENT.getCode())) {
+                                    mqMessageEntity.getMessageStatus() == MQConstant.MQStatus.SENT.getCode())) {
                         mqMessageEntity.setMessageStatus(MQConstant.MQStatus.ERROR_DELIVERED.getCode());
                         wareFeignService.updateById(mqMessageEntity);
                     }
@@ -327,6 +328,34 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         OrderEntity orderEntity = baseMapper.selectOne(new QueryWrapper<OrderEntity>().eq("order_sn", out_trade_no));
         orderEntity.setStatus(OrderStatusEnum.PAYED.getCode());
         baseMapper.updateById(orderEntity);
+    }
+
+    @Override
+    public void saveSeckillOrder(SeckillSuccessVo seckillSuccessVo) throws ExecutionException, InterruptedException {
+        // 查询当前用户信息
+        Long memberId = seckillSuccessVo.getMemberId();
+        R info = memberFeignService.info(memberId);
+        ReceiveAddressVo defaultAddress = memberFeignService.findDefaultAddress(memberId);
+        if (info.getCode() == 0 && defaultAddress != null) {
+            MemberEntityVo member = JSON.parseObject(JSON.toJSONString(info.get("member")), MemberEntityVo.class);
+            OrderSubmitVo orderSubmitVo = new OrderSubmitVo();
+            orderSubmitVo.setAddressId(defaultAddress.getId());
+            orderSubmitVo.setIntegration(BigDecimal.ZERO);
+            orderSubmitVo.setPayPrice(seckillSuccessVo.getSkuPrice());
+            orderSubmitVo.setPayType(1);
+            OrderEntity orderEntity = buildOrderEntity(orderSubmitVo, member);
+            orderEntity.setOrderSn(seckillSuccessVo.getOrderSn());
+            OrderItemEntity orderItemEntity = new OrderItemEntity();
+            orderItemEntity.setSkuPic(seckillSuccessVo.getSkuImage());
+            orderItemEntity.setSkuPrice(seckillSuccessVo.getSkuPrice());
+            orderItemEntity.setSkuId(seckillSuccessVo.getSkuId());
+            orderItemEntity.setOrderSn(seckillSuccessVo.getOrderSn());
+            orderItemEntity.setSkuName(seckillSuccessVo.getSkuTitle());
+            orderItemEntity.setSkuQuantity(seckillSuccessVo.getTotalMount());
+            saveOrderAndOrderItem(orderEntity,Collections.singletonList(orderItemEntity));
+        } else {
+            throw new RuntimeException("远程调用发生异常");
+        }
     }
 
     private void saveOrderAndOrderItem(OrderEntity orderEntity, List<OrderItemEntity> orderItemEntities) {

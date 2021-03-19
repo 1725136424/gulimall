@@ -600,14 +600,21 @@
                     </div>
                 </div>
                 <div class="box-summary clear">
-                    <ul>
-                        <li>京东价</li>
+                    <ul th:with="seckill=${item.seckillSkuRelationEntity}, now=${#dates.createNow().time}">
+                        <li th:if="${seckill == null || seckill.randomCode == null}">京东价</li>
+                        <li th:if="${seckill == null || seckill.randomCode != null}">秒杀价</li>
                         <li>
                             <span>￥</span>
-                            <span th:text="${#numbers.formatDecimal(item.skuInfoEntity.price, 3, 2)}">4499.00</span>
+                            <span th:if="${seckill == null || seckill.randomCode == null}"
+                                  th:text="${#numbers.formatDecimal(item.skuInfoEntity.price, 3, 2)}">4499.00</span>
+                            <span th:if="${seckill == null || seckill.randomCode != null}"
+                                  th:text="${#numbers.formatDecimal(seckill.seckillPrice, 3, 2)}">4499.00</span>
                         </li>
-                        <li>
-                            预约享资格
+                        <li th:if="${seckill != null && now < seckill.startTime.time}" style="color: red">
+                            近几日将参与秒杀，敬请关注
+                        </li>
+                        <li th:if="${seckill != null && now >= seckill.startTime.time && now <= seckill.endTime.time}" style="color: red">
+                            当前商品正在秒杀中！！！
                         </li>
                         <li>
                             <a href="/static/item/">
@@ -736,8 +743,13 @@
                         </div>
                     </div>
                     <div class="box-btns-two">
-                        <a class="saveCart">
+                        <a class="saveCart" style="cursor: pointer" th:if="${item.seckillSkuRelationEntity == null || item.seckillSkuRelationEntity.randomCode == null}">
                             立即购买
+                        </a>
+                        <a class="seckill"
+                           th:attr="randomCode=${item.seckillSkuRelationEntity.randomCode}, sessionId=${item.seckillSkuRelationEntity.promotionSessionId}"
+                           style="cursor: pointer" th:if="${item.seckillSkuRelationEntity != null && item.seckillSkuRelationEntity.randomCode != null}">
+                            秒杀抢购
                         </a>
                     </div>
                     <div class="box-btns-three">
@@ -1407,6 +1419,21 @@
         // 获取当前的商品数量
         let num = $(".numberValue").val()
         window.location.href = "http://cart.gulimall.com/cart?skuId=" + skuId + "&num=" + num
+    })
+
+    // 秒杀按钮点击
+    $(".seckill").click(function () {
+        // 判断当前是否登录
+        let isLogin = [[${session.user != null}]]
+        if (isLogin) {
+            let randomCode = $(this).attr("randomCode")
+            let sessionId = $(this).attr("sessionId")
+            let num = $(".numberValue").val()
+            window.location.href = "http://seckill.gulimall.com/seckill/auth/seckill?skuId=" + skuId + "&num=" + num + "&token=" + randomCode + "&sessionId=" + sessionId
+        } else {
+            window.location.href = "http://auth.gulimall.com/"
+        }
+
     })
 
 </script>

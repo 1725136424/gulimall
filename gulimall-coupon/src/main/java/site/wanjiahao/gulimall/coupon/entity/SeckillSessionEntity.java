@@ -1,11 +1,13 @@
 package site.wanjiahao.gulimall.coupon.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
+import java.util.List;
 
 /**
  * 秒杀活动场次
@@ -17,6 +19,7 @@ import lombok.Data;
 @Data
 @TableName("sms_seckill_session")
 public class SeckillSessionEntity implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -44,5 +47,16 @@ public class SeckillSessionEntity implements Serializable {
 	 * 创建时间
 	 */
 	private Date createTime;
+
+	/**
+	 * 上架状态 0: 未上架 1: 上架失败 2: 已上架
+	 */
+	private Integer publishStatus;
+
+	/**
+	 * 非数据库字段
+	 */
+	@TableField(exist = false)
+	private List<SeckillSkuRelationEntity>  seckillSkuRelationEntities;
 
 }

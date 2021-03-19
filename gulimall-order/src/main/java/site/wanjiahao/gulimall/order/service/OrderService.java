@@ -2,6 +2,7 @@ package site.wanjiahao.gulimall.order.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import site.wanjiahao.common.utils.PageUtils;
+import site.wanjiahao.common.vo.SeckillSuccessVo;
 import site.wanjiahao.gulimall.order.entity.OrderEntity;
 import site.wanjiahao.gulimall.order.vo.*;
 
@@ -33,5 +34,7 @@ public interface OrderService extends IService<OrderEntity> {
     List<OrderListHtmlVo> listOrderWithOrderItem();
 
     void handleOrderResult(AlipayAsyncNotifyVo alipayAsyncNotifyVo);
+
+    void saveSeckillOrder(SeckillSuccessVo seckillSuccessVo) throws ExecutionException, InterruptedException;
 }
 

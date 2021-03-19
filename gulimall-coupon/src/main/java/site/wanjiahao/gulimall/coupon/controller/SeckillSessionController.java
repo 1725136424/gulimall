@@ -1,20 +1,17 @@
 package site.wanjiahao.gulimall.coupon.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import site.wanjiahao.common.utils.PageUtils;
+import site.wanjiahao.common.utils.R;
+import site.wanjiahao.gulimall.coupon.entity.SeckillSessionEntity;
+import site.wanjiahao.gulimall.coupon.service.SeckillSessionService;
+
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import site.wanjiahao.gulimall.coupon.entity.SeckillSessionEntity;
-import site.wanjiahao.gulimall.coupon.service.SeckillSessionService;
-import site.wanjiahao.common.utils.PageUtils;
-import site.wanjiahao.common.utils.R;
 
 
 
@@ -52,6 +49,29 @@ public class SeckillSessionController {
 		SeckillSessionEntity seckillSession = seckillSessionService.getById(id);
 
         return R.ok().put("seckillSession", seckillSession);
+    }
+
+    /**
+     * 获取最近三天秒杀的场次信息
+     */
+    @GetMapping("/getThreadSession")
+    public R getThreeSession() {
+        List<SeckillSessionEntity> seckillSessionEntities = seckillSessionService.getThreeSession();
+        return R.ok().put("sessions", seckillSessionEntities);
+    }
+
+    /**
+     * 更新场次状态信息
+     */
+    @PostMapping("/publish")
+    public R publish(@RequestBody List<Long> sessionIds) {
+        try {
+            seckillSessionService.publish(sessionIds);
+            return R.ok();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.error();
+        }
     }
 
     /**
