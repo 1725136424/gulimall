@@ -1,0 +1,42 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos.gulimall:8848
+    sentinel:
+      transport:
+        dashboard: sentinel.gulimall:8080
+        port: 8719
+  zipkin:
+    base-url: zipkin.gulimall:9411
+    discovery-client-enabled: false
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1
+  application:
+    name: gulimall-cart
+  thymeleaf:
+    cache: false
+  redis:
+    host: redis.gulimall
+  session:
+    store-type: redis
+server:
+  port: 8080
+gulimall:
+  thread:
+    core-pool-size: 20
+    maximum-pool-size: 200
+    keep-alive-time: 10
+    capacity: 100000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+logging:
+  level:
+    org.springframework.cloud.sleuth: debug
+    org.springframework.cloud.openfeign: debug

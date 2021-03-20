@@ -1,0 +1,81 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    #MySQL配置
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql-master.gulimall:3306/gulimall_oms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+  zipkin:
+    base-url: http://zipkin.gulimall:9411
+    discovery-client-enabled: false
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos.gulimall:8848
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: sentinel.gulimall:8080
+  application:
+    name: gulimall-order
+  rabbitmq:
+    host: rabbitmq.gulimall
+    publisher-confirm-type: simple # 发送到Broker的回调开启
+    publisher-returns: true # 异常回调开启
+    template:
+      mandatory: true # 只要抵达队列，以异步发送，优先回调这个函数
+    listener:
+      simple:
+        acknowledge-mode: manual # 手动确认
+  thymeleaf:
+    cache: false
+  redis:
+    host: redis.gulimall
+  mvc:
+    date-format: yyyy-MM-dd HH:mm:ss
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto # 自增
+gulimall:
+  thread:
+    core-pool-size: 20
+    maximum-pool-size: 200
+    keep-alive-time: 10
+    capacity: 100000
+seata:
+  application-id: ${spring.application.name}
+  tx-service-group: default
+  service:
+    vgroupMapping:
+      default: default
+    grouplist:
+      default: seata.gulimall:8091
+alipay:
+  protocol: https
+  gatewayHost: openapi.alipaydev.com
+  signType: RSA2
+  appId: 2021000116668518
+  notifyUrl: http://mb8tpp.natappfree.cc/alipayAsyncNotify/handleOrderResult
+  merchantPrivatePath: foo/merchantPrivateKey.txt
+  merchantCertPath: foo/appCertPublicKey_2021000116668518.crt
+  alipayCertPath: foo/alipayCertPublicKey_RSA2.crt
+  alipayRootCertPath: foo/alipayRootCert.crt
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+logging:
+  level:
+    org.springframework.cloud.sleuth: debug
+    org.springframework.cloud.openfeign: debug

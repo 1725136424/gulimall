@@ -1,0 +1,51 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: gulimall-seckill
+  zipkin:
+    base-url: http://zipkin.gulimall:9411
+    discovery-client-enabled: false
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos.gulimall:8848
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: sentinel.gulimall:8080
+      datasource: # 持久化至nacos中
+        ds1:
+          nacos:
+            server-addr: nacos.gulimall:8848
+            dataId: order-flow-rules
+            groupId: DEFAULT_GROUP
+            data-type: json
+            rule_type: flow
+  task:
+    scheduling:
+      pool:
+        size: 5  # 无效
+  redis:
+    host: redis.gulimall
+  session:
+    store-type: redis
+  thymeleaf:
+    cache: false
+  rabbitmq:
+    virtual-host: /
+    host: rabbitmq.gulimall
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+logging:
+  level:
+    org.springframework.cloud.sleuth: debug
+    org.springframework.cloud.openfeign: debug

@@ -1,14 +1,6 @@
+server:
+  port: 9000
 spring:
-  application:
-    name: gulimall-coupon
-  zipkin:
-    base-url: http://192.168.56.10:9411
-    discovery-client-enabled: false
-    sender:
-      type: web
-  sleuth:
-    sampler:
-      probability: 1
   cloud:
     nacos:
       config:
@@ -19,22 +11,3 @@ spring:
           - data-id: datasource.yml
             group: dev
             refresh: true
-          - data-id: mybatis.yml
-            group: dev
-            refresh: true
-          - data-id: other.yml
-            group: dev
-            refresh: true
-    sentinel:
-      transport:
-        port: 8719
-        dashboard: 127.0.0.1:8080
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-logging:
-  level:
-    org.springframework.cloud.sleuth: debug
-    org.springframework.cloud.openfeign: debug

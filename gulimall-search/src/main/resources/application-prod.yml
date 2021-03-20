@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: gulimall-search
+  zipkin:
+    base-url: http://zipkin.gulimall:9411
+    discovery-client-enabled: false
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos.gulimall:8848
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: sentinel:gulimall:8080
+  thymeleaf:
+    cache: false
+  redis:
+    host: redis.gulimall
+  cache:
+    redis:
+      time-to-live: 3600000
+server:
+  port: 8080
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+logging:
+  level:
+    org.springframework.cloud.sleuth: debug
+    org.springframework.cloud.openfeign: debug

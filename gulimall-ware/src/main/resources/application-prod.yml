@@ -1,0 +1,64 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    #MySQL配置
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql-master:3306/gulimall_wms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+  zipkin:
+    base-url: http://zipkin.gulimall:9411
+    discovery-client-enabled: false
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos.gulimall:8848
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: sentinel.gulimall:8080
+  application:
+    name: gulimall-ware
+  jackson:
+    date-format: yyyy-MM-dd
+  rabbitmq:
+    host: rabbitmq.gulimall
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual
+    publisher-confirm-type: simple
+    publisher-returns: true
+    template:
+      mandatory: true
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto # 自增
+logging:
+  level:
+    site.wanjiahao.gulimall.ware: debug # 输出sql语句
+    org.springframework.cloud.sleuth: debug
+    org.springframework.cloud.openfeign: debug
+seata:
+  application-id: ${spring.application.name}
+  tx-service-group: default
+  service:
+    vgroupMapping:
+      default: default
+    grouplist:
+      default: seata.gulimall:8091
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
