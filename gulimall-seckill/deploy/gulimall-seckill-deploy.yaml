@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gulimall-search
+  name: gulimall-seckill
   namespace: gulimall
   labels:
     app: gulimall-seckill
