@@ -51,7 +51,7 @@ spec:
     - name: http
       port: 8080
       targetPort: 8080
-      nodePort: 3206
+      nodePort: 32006
       protocol: TCP
   selector:
     app: gulimall-search
