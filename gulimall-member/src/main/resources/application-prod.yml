@@ -9,7 +9,7 @@ spring:
     username: root
     password: root
   zipkin:
-    base-url: zipkin.gulimall:9411
+    base-url: http://zipkin.gulimall:9411
     discovery-client-enabled: false
     sender:
       type: web
