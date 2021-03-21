@@ -15,8 +15,10 @@ import io.renren.common.validator.ValidatorUtils;
 import io.renren.modules.job.entity.ScheduleJobEntity;
 import io.renren.modules.job.service.ScheduleJobService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
@@ -26,10 +28,10 @@ import java.util.Map;
  * @author Mark sunlightcs@gmail.com
  */
 //@RestController
-@RequestMapping("/sys/schedule")
+//@RequestMapping("/sys/schedule")
 public class ScheduleJobController {
 
-	@Autowired
+//	@Autowired
 	private ScheduleJobService scheduleJobService;
 	
 	/**
