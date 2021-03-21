@@ -3,6 +3,8 @@ spring:
         nacos:
             discovery:
                 server-addr: nacos.gulimall:8848
+    redis:
+        host: redis.gulimall
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
         druid:
