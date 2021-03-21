@@ -1,14 +1,20 @@
 package site.wanjiahao.gulimall.search.config;
 
+import lombok.Data;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@ConfigurationProperties(prefix = "es")
+@Data
 public class ElasticSearchConfiguration {
+
+    private String host;
 
     /**
      * 请求参数设置项，可以设置请求头等等信息
@@ -28,7 +34,7 @@ public class ElasticSearchConfiguration {
     public RestHighLevelClient restHighLevelClient() {
         return new RestHighLevelClient(
                 RestClient.builder(
-                        new HttpHost("192.168.56.10", 9200, "http")));
+                        new HttpHost(host, 9200, "http")));
     }
 
 

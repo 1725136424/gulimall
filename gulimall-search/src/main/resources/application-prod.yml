@@ -35,3 +35,5 @@ logging:
   level:
     org.springframework.cloud.sleuth: debug
     org.springframework.cloud.openfeign: debug
+es:
+  host: elasticsearch.gulimall
