@@ -2,17 +2,6 @@ server:
   port: 8080
 spring:
   cloud:
-
-  application:
-    name: gulimall-third-party
-  zipkin:
-    base-url: http://zipkin.gulimall:9411
-    discovery-client-enabled: false
-    sender:
-      type: web
-  sleuth:
-    sampler:
-      probability: 1
     nacos:
       discovery:
         server-addr: nacos.gulimall:8848
@@ -21,6 +10,8 @@ spring:
         port: 8719
         dashboard: sentinel.gulimall:8080
     alicloud:
+      access-key: LTAI4G454cBvWSbPFH4HEVHi
+      secret-key: agDTsCPziuMMBbolQlucIa5cCkKlEn
       sms:
         access-key-id: LTAI4G454cBvWSbPFH4HEVHi
         access-secret: agDTsCPziuMMBbolQlucIa5cCkKlEn
@@ -32,6 +23,16 @@ spring:
       oss:
         endpoint: oss-cn-hangzhou.aliyuncs.com
         bucket-name: gulimall-hgg
+  application:
+    name: gulimall-third-party
+  zipkin:
+    base-url: http://zipkin.gulimall:9411
+    discovery-client-enabled: false
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      probability: 1
 management:
   endpoints:
     web:
