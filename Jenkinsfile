@@ -29,18 +29,23 @@ pipeline {
       }
 
       stage('代码质量分析') {
-         steps {
-             ontainer ('maven') {
-                    withCredentials([string(credentialsId: "$SONAR_CREDENTIAL_ID", variable: 'SONAR_TOKEN')]) {
-                    withSonarQubeEnv('sonar') {
-                       sh 'echo 当前目录是: `pwd`'
-                       sh "mvn sonar:sonar -gs `pwd`/mvn-settings.xml -Dsonar.login=$SONAR_TOKEN"
-                    }
-                    timeout(time: 1, unit: 'HOURS') {
-                      waitForQualityGate abortPipeline: true
-                    }
+            steps {
+              container ('maven') {
+                withCredentials([string(credentialsId: "$SONAR_CREDENTIAL_ID", variable: 'SONAR_TOKEN')]) {
+                  withSonarQubeEnv('sonar') {
+                   sh "echo 当前目录为 `pwd`"
+                   sh "echo 正在编译项目"
+                   sh "mvn clean install -Dmaven.test.skip=true"
+                   sh "mvn sonar:sonar -gs `pwd`/mvn-settings.xml -Dsonar.login=$SONAR_TOKEN"
+                  }
+                }
+                timeout(time: 1, unit: 'HOURS') {
+                  waitForQualityGate abortPipeline: true
+                }
               }
-         }
-      }
+            }
+        }
+
+
     }
 }
