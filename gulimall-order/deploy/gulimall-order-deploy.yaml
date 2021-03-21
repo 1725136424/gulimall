@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: gulimall-order
-          image: $REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:$TAG_NAME
+          image: $REGISTRY/$DOCKERHUB_NAMESPACE/$PROJECT_NAME:$TAG_NAME
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
