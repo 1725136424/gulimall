@@ -6,7 +6,7 @@ pipeline {
   }
   parameters {
     string(name:'TAG_NAME',defaultValue: 'v0.0Beta',description:'')
-    string(name:'PROJECT_NAME',defaultValue: '',description:'')
+    string(name:'PROJECT_NAME',defaultValue: 'gulimall-gateway',description:'')
     string(name:'BRANCH_NAME',defaultValue: 'master', description: '')
   }
   environment {
