@@ -25,7 +25,7 @@ pipeline {
       }
     }
 
-   stage('代码质量分析') {
+   /* stage('代码质量分析') {
             steps {
               container ('maven') {
                 withCredentials([string(credentialsId: "$SONAR_CREDENTIAL_ID", variable: 'SONAR_TOKEN')]) {
@@ -41,7 +41,7 @@ pipeline {
                 }
               }
             }
-        }
+        } */
 
     stage ('构建镜像-推送镜像') {
             steps {
