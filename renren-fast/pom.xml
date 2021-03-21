@@ -301,9 +301,22 @@
 					<dockerDirectory>${project.basedir}</dockerDirectory>
 					<resources>
 						<resource>
-							<targetPath>/</targetPath>
-							<directory>${project.build.directory}</directory>
-							<include>${project.build.finalName}.jar</include>
+							<targetPath>${project.build.directory}/classes</targetPath>
+							<directory>src/main/resources</directory>
+							<filtering>true</filtering>
+							<excludes>
+								<exclude>**/*.jasper</exclude>
+								<exclude>**/*.jrxml</exclude>
+							</excludes>
+						</resource>
+						<resource>
+							<targetPath>${project.build.directory}/classes</targetPath>
+							<directory>src/main/resources</directory>
+							<filtering>false</filtering>
+							<includes>
+								<include>**/*.jasper</include>
+								<include>**/*.jrxml</include>
+							</includes>
 						</resource>
 					</resources>
 				</configuration>

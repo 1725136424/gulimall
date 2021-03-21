@@ -42,6 +42,7 @@ public class ScheduleUtils {
         try {
             return (CronTrigger) scheduler.getTrigger(getTriggerKey(jobId));
         } catch (SchedulerException e) {
+            e.printStackTrace();
             throw new RRException("获取定时任务CronTrigger出现异常", e);
         }
     }
