@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: gulimall-search
-          image: $REGISTRY/$DOCKERHUB_NAMESPACE/$PROJECT_NAME:$TAG_NAME
+          image: $REGISTRY/$DOCKERHUB_NAMESPACE/$PROJECT_NAME:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
