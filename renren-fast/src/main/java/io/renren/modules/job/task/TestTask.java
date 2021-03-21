@@ -10,7 +10,6 @@ package io.renren.modules.job.task;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 /**
  * 测试定时任务(演示Demo，可删除)
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Mark sunlightcs@gmail.com
  */
-@Component("testTask")
+//@Component("testTask")
 public class TestTask implements ITask {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
