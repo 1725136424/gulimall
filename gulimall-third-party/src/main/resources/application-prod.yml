@@ -10,11 +10,11 @@ spring:
         port: 8719
         dashboard: sentinel.gulimall:8080
     alicloud:
-      access-key: LTAI4G454cBvWSbPFH4HEVHi
-      secret-key: agDTsCPziuMMBbolQlucIa5cCkKlEn
+      access-key: #
+      secret-key: #
       sms:
-        access-key-id: LTAI4G454cBvWSbPFH4HEVHi
-        access-secret: agDTsCPziuMMBbolQlucIa5cCkKlEn
+        access-key-id: #
+        access-secret: #
         sys-domain: dysmsapi.aliyuncs.com
         sys-version: "2017-05-25"
         region-id: cn-hangzhou
