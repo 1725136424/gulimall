@@ -37,7 +37,7 @@ class GulimallThirdPartyApplicationTests {
     @Test
     void test4() {
         DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou",
-                "LTAI4G454cBvWSbPFH4HEVHi", "agDTsCPziuMMBbolQlucIa5cCkKlEn");
+                "*", "*");
         IAcsClient client = new DefaultAcsClient(profile);
         CommonRequest request = new CommonRequest();
         request.setSysMethod(MethodType.POST);
